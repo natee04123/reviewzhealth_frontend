@@ -63,7 +63,7 @@ export default function Login() {
         </div>
 
         {/* Google Sign In */}
-        <a href="/auth/google" style={{
+        <a href={${import.meta.env.VITE_API_BASE_URL ?? ''}/auth/google} style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
           padding: '14px 24px', borderRadius: 'var(--radius-md)',
           background: 'var(--ink)', color: '#F7F5F0',
