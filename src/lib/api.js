@@ -1,7 +1,7 @@
 // src/lib/api.js
 // Thin wrapper around fetch for all backend API calls.
 
-const BASE = '';  // same origin via Vite proxy in dev; set to API URL in prod
+const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
 async function request(path, options = {}) {
   const res = await fetch(BASE + path, {
