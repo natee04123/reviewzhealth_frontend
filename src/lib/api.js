@@ -1,12 +1,25 @@
-// src/lib/api.js
-// Thin wrapper around fetch for all backend API calls.
-
 const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
+function getToken() {
+  return localStorage.getItem('rzh_token');
+}
+
+export function saveToken(token) {
+  localStorage.setItem('rzh_token', token);
+}
+
+export function clearToken() {
+  localStorage.removeItem('rzh_token');
+}
+
 async function request(path, options = {}) {
+  const token = getToken();
   const res = await fetch(BASE + path, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { 'x-auth-token': token } : {}),
+      ...options.headers,
+    },
     ...options,
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
@@ -20,16 +33,13 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // Auth
   getMe:       ()          => request('/auth/me'),
   logout:      ()          => request('/auth/logout', { method: 'POST' }),
 
-  // Locations
-  getLocations:          ()   => request('/api/locations'),
-  syncLocations:         ()   => request('/api/locations/sync', { method: 'POST' }),
-  enableNotifications:   (id) => request(`/api/locations/${id}/enable-notifications`, { method: 'POST' }),
+  getLocations:        ()   => request('/api/locations'),
+  syncLocations:       ()   => request('/api/locations/sync', { method: 'POST' }),
+  enableNotifications: (id) => request(`/api/locations/${id}/enable-notifications`, { method: 'POST' }),
 
-  // Reviews
   getReviews:   (status) => request(`/api/reviews${status ? `?status=${status}` : ''}`),
   getReview:    (id)     => request(`/api/reviews/${id}`),
   approveReview:(id, editedText) =>
