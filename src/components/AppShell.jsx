@@ -9,13 +9,12 @@ const NAV = [
   { to: '/dashboard/settings',  icon: '◎', label: 'Settings' },
 ];
 
-export default function AppShell({ user }) {
-  const navigate = useNavigate();
+export default function AppShell({ user, onLogout }) {  const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  async function handleLogout() {
+async function handleLogout() {
     setLoggingOut(true);
-    await api.logout().catch(() => {});
+    await onLogout();
     navigate('/');
   }
 
