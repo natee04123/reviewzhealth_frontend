@@ -1,0 +1,84 @@
+/* ── Design tokens ──────────────────────────────────────────── */
+:root {
+  --bg:          #F7F5F0;
+  --bg-card:     #FFFFFF;
+  --bg-muted:    #F0EDE6;
+  --border:      #E2DDD5;
+  --border-dark: #C8C2B8;
+
+  --ink:         #1C1915;
+  --ink-2:       #5C5750;
+  --ink-3:       #9C978F;
+
+  --green:       #1A6B4A;
+  --green-bg:    #EAF5EE;
+  --green-border:#A8D9BC;
+
+  --amber:       #92510A;
+  --amber-bg:    #FDF3E3;
+  --amber-border:#F0C87A;
+
+  --red:         #9B2626;
+  --red-bg:      #FDF0EE;
+  --red-border:  #F0AAAA;
+
+  --blue:        #1A4A8C;
+  --blue-bg:     #EEF3FC;
+  --blue-border: #AABFE8;
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+
+  --shadow-sm:  0 1px 3px rgba(28,25,21,0.06), 0 1px 2px rgba(28,25,21,0.04);
+  --shadow-md:  0 4px 16px rgba(28,25,21,0.08), 0 1px 4px rgba(28,25,21,0.04);
+  --shadow-lg:  0 12px 40px rgba(28,25,21,0.12), 0 2px 8px rgba(28,25,21,0.06);
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--font-body); cursor: pointer; border: none; background: none; }
+textarea, input { font-family: var(--font-body); }
+
+/* ── Utility classes ────────────────────────────────────────── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.anim-fade-up  { animation: fadeUp 0.35s ease both; }
+.anim-fade-in  { animation: fadeIn 0.25s ease both; }
