@@ -1,7 +1,6 @@
-// src/App.jsx
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { api } from './lib/api.js';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+import { api, saveToken, clearToken } from './lib/api.js';
 import AppShell     from './components/AppShell.jsx';
 import Login        from './pages/Login.jsx';
 import Dashboard    from './pages/Dashboard.jsx';
@@ -10,16 +9,42 @@ import Locations    from './pages/Locations.jsx';
 import Settings     from './pages/Settings.jsx';
 import { Spinner }  from './components/ui.jsx';
 
+function TokenCapture({ onToken }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (token) {
+      saveToken(token);
+      searchParams.delete('token');
+      setSearchParams(searchParams, { replace: true });
+      onToken();
+    }
+  }, []);
+  return null;
+}
+
 export default function App() {
-  const [user, setUser]       = useState(undefined); // undefined = loading
+  const [user, setUser]       = useState(undefined);
   const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    api.getMe()
-      .then(data => setUser(data.userId ? data : null))
-      .catch(() => setUser(null))
-      .finally(() => setChecking(false));
-  }, []);
+  async function checkAuth() {
+    try {
+      const data = await api.getMe();
+      setUser(data.user ?? null);
+    } catch {
+      setUser(null);
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  useEffect(() => { checkAuth(); }, []);
+
+  async function handleLogout() {
+    await api.logout().catch(() => {});
+    clearToken();
+    setUser(null);
+  }
 
   if (checking) {
     return (
@@ -31,20 +56,17 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <TokenCapture onToken={checkAuth} />
       <Routes>
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
-
-        {/* Protected dashboard routes */}
         <Route path="/dashboard" element={
-          user ? <AppShell user={user} /> : <Navigate to="/" replace />
+          user ? <AppShell user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />
         }>
           <Route index          element={<Dashboard />} />
           <Route path="reviews/:id" element={<ReviewDetail />} />
           <Route path="locations"   element={<Locations />} />
           <Route path="settings"    element={<Settings />} />
         </Route>
-
-        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
