@@ -47,5 +47,5 @@ export const api = {
   regenerate:  (id)     => request(`/api/reviews/${id}/regenerate`, { method: 'POST' }),
   dismiss:     (id)     => request(`/api/reviews/${id}/dismiss`, { method: 'POST' }),
   // Billing
-  createCheckout: () => request('/api/billing/checkout', { method: 'POST' }),
+  createCheckout: (plan) => request('/api/billing/checkout', { method: 'POST', body: { plan } }),
 };
