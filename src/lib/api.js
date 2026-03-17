@@ -48,4 +48,6 @@ export const api = {
   dismiss:     (id)     => request(`/api/reviews/${id}/dismiss`, { method: 'POST' }),
   // Billing
   createCheckout: (plan) => request('/api/billing/checkout', { method: 'POST', body: { plan } }),
+  // Analytics
+  getAnalytics: () => request('/api/analytics'),
 };
