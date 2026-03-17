@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
-import { api, saveToken, clearToken } from './lib/api.js';
+import { api } from './lib/api.js';
 import AppShell     from './components/AppShell.jsx';
 import Login        from './pages/Login.jsx';
 import Dashboard    from './pages/Dashboard.jsx';
 import ReviewDetail from './pages/ReviewDetail.jsx';
 import Locations    from './pages/Locations.jsx';
 import Settings     from './pages/Settings.jsx';
+import Analytics    from './pages/Analytics.jsx';
+import Billing      from './pages/Billing.jsx';
 import { Spinner }  from './components/ui.jsx';
-import Analytics from './pages/Analytics.jsx';
-import Billing from './pages/Billing.jsx';
 
 function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
-      saveToken(token);
+      localStorage.setItem('rzh_token', token);
       searchParams.delete('token');
       setSearchParams(searchParams, { replace: true });
       onToken();
@@ -26,13 +26,13 @@ function TokenCapture({ onToken }) {
 }
 
 export default function App() {
-  const [user, setUser]       = useState(undefined);
+  const [user, setUser]         = useState(undefined);
   const [checking, setChecking] = useState(true);
 
   async function checkAuth() {
     try {
       const data = await api.getMe();
-      setUser(data.user ?? null);
+      setUser(data.user ?? data ?? null);
     } catch {
       setUser(null);
     } finally {
@@ -44,7 +44,7 @@ export default function App() {
 
   async function handleLogout() {
     await api.logout().catch(() => {});
-    clearToken();
+    localStorage.removeItem('rzh_token');
     setUser(null);
   }
 
@@ -64,12 +64,12 @@ export default function App() {
         <Route path="/dashboard" element={
           user ? <AppShell user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />
         }>
-          <Route index          element={<Dashboard />} />
-          <Route path="reviews/:id" element={<ReviewDetail />} />
-          <Route path="locations"   element={<Locations />} />
-          <Route path="settings"    element={<Settings />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="billing" element={<Billing />} />
+          <Route index                element={<Dashboard />} />
+          <Route path="reviews/:id"   element={<ReviewDetail />} />
+          <Route path="locations"     element={<Locations />} />
+          <Route path="analytics"     element={<Analytics />} />
+          <Route path="billing"       element={<Billing />} />
+          <Route path="settings"      element={<Settings />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
