@@ -47,9 +47,9 @@ export const api = {
   regenerate:  (id)     => request(`/api/reviews/${id}/regenerate`, { method: 'POST' }),
   dismiss:     (id)     => request(`/api/reviews/${id}/dismiss`, { method: 'POST' }),
 // Billing
-  getPlans:         ()                    => request('/api/billing/plans'),
-  getBillingStatus: ()                    => request('/api/billing/status', { method: 'GET' }),
-  createCheckout:   (plan, interval)      => request('/api/billing/checkout', { method: 'POST', body: { plan, interval } }),
+  getPlans:         ()                           => request('/api/billing/plans'),
+  getBillingStatus: ()                           => request('/api/billing/status'),
+  createCheckout:   (locationCount, interval)    => request('/api/billing/checkout', { method: 'POST', body: { locationCount, interval } }),
   // Analytics
   getAnalytics: () => request('/api/analytics'),
 };
