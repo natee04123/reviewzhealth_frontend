@@ -27,14 +27,14 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  // Auth
+// Auth
   getMe: () => {
     if (isDemoMode()) return Promise.resolve(DEMO_USER);
-    return request('/api/auth/me');
+    return request('/auth/me');
   },
   logout: () => {
     if (isDemoMode()) return Promise.resolve();
-    return request('/api/auth/logout', { method: 'POST' });
+    return request('/auth/logout', { method: 'POST' });
   },
 
   // Locations
