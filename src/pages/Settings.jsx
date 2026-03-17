@@ -1,14 +1,25 @@
-// src/pages/Settings.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { api } from '../lib/api.js';
 import { Toast } from '../components/ui.jsx';
 
 export default function Settings() {
   const [toast, setToast] = useState(null);
+  const [upgrading, setUpgrading] = useState(false);
 
   function showToast(message, type = 'success') {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
+  }
+
+  async function handleUpgrade() {
+    setUpgrading(true);
+    try {
+      const { url } = await api.createCheckout();
+      window.location.href = url;
+    } catch (e) {
+      showToast(e.message, 'error');
+      setUpgrading(false);
+    }
   }
 
   return (
@@ -17,10 +28,9 @@ export default function Settings() {
         Settings
       </h1>
       <p style={{ color: 'var(--ink-2)', fontSize: 15, marginBottom: 36 }}>
-        Customize how the AI drafts your review responses.
+        Customize how reviewzhealth drafts your review responses.
       </p>
 
-      {/* AI tone preferences */}
       <Section title="AI response preferences">
         <Field label="Business name" hint="Used in sign-offs and personalization">
           <input type="text" placeholder="e.g. Maple Street Cafe" style={inputStyle} />
@@ -37,7 +47,6 @@ export default function Settings() {
         </Field>
       </Section>
 
-      {/* Notification preferences */}
       <Section title="Notifications">
         <Field label="Notification email" hint="Where we send new review alerts">
           <input type="email" placeholder="you@yourbusiness.com" style={inputStyle} />
@@ -47,7 +56,6 @@ export default function Settings() {
         <Toggle label="Notify me if a reply fails to post" defaultChecked />
       </Section>
 
-      {/* Danger zone */}
       <Section title="Account">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
@@ -60,20 +68,33 @@ export default function Settings() {
           <button style={{
             padding: '8px 14px', borderRadius: 'var(--radius-md)',
             border: '1px solid var(--red-border)', color: 'var(--red)',
-            background: 'var(--red-bg)', fontSize: 13,
+            background: 'var(--red-bg)', fontSize: 13, cursor: 'pointer',
           }}>
             Disconnect
           </button>
         </div>
       </Section>
 
-      <button onClick={() => showToast('Settings saved')} style={{
-        padding: '12px 28px', borderRadius: 'var(--radius-md)',
-        background: 'var(--ink)', color: '#F7F5F0',
-        fontSize: 15, fontWeight: 500, marginTop: 8,
-      }}>
-        Save settings
-      </button>
+      <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
+        <button
+          onClick={handleUpgrade}
+          disabled={upgrading}
+          style={{
+            padding: '12px 28px', borderRadius: 'var(--radius-md)',
+            background: 'var(--green)', color: '#fff',
+            fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
+            opacity: upgrading ? 0.7 : 1,
+          }}>
+          {upgrading ? 'Redirecting...' : 'Upgrade to Pro — $29/mo'}
+        </button>
+        <button onClick={() => showToast('Settings saved')} style={{
+          padding: '12px 28px', borderRadius: 'var(--radius-md)',
+          background: 'var(--ink)', color: '#F7F5F0',
+          fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
+        }}>
+          Save settings
+        </button>
+      </div>
 
       {toast && <Toast {...toast} onDismiss={() => setToast(null)} />}
     </div>
@@ -114,7 +135,7 @@ function Toggle({ label, defaultChecked }) {
       <button onClick={() => setOn(o => !o)} style={{
         width: 40, height: 22, borderRadius: 99, position: 'relative',
         background: on ? 'var(--green)' : 'var(--border-dark)',
-        transition: 'background 0.2s', flexShrink: 0,
+        transition: 'background 0.2s', flexShrink: 0, border: 'none', cursor: 'pointer',
       }}>
         <span style={{
           position: 'absolute', top: 2, left: on ? 20 : 2,
@@ -130,5 +151,5 @@ const inputStyle = {
   width: '100%', padding: '9px 12px',
   borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)',
   fontSize: 14, background: 'var(--bg)', color: 'var(--ink)',
-  outline: 'none',
+  outline: 'none', fontFamily: 'var(--font-body)',
 };
