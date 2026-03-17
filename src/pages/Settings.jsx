@@ -87,18 +87,28 @@ export default function Settings() {
         </div>
       )}
 
-      {/* Pricing calculator */}
+{/* Billing link */}
       <div style={{
         background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-xl)', padding: '28px 32px', marginBottom: 32,
-        boxShadow: 'var(--shadow-md)',
+        borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 32,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--ink)', marginBottom: 4 }}>
-          Choose your plan
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink)' }}>Plan & billing</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2 }}>
+            {billing?.plan !== 'free'
+              ? `${billing?.plan?.charAt(0).toUpperCase() + billing?.plan?.slice(1)} plan · ${billing?.locationCount} location${billing?.locationCount !== 1 ? 's' : ''} · $${billing?.monthlyTotal}/mo`
+              : 'Free plan — upgrade to connect locations'}
+          </div>
         </div>
-        <div style={{ fontSize: 14, color: 'var(--ink-2)', marginBottom: 24 }}>
-          Pricing scales with your locations — the more you have, the lower the per-location rate.
-        </div>
+        <button onClick={() => window.location.href = '/dashboard/billing'} style={{
+          padding: '8px 16px', borderRadius: 'var(--radius-md)',
+          background: 'var(--ink)', color: '#F7F5F0',
+          fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer',
+        }}>
+          Manage billing →
+        </button>
+      </div>
 
         {/* Location count input */}
         <div style={{ marginBottom: 20 }}>
