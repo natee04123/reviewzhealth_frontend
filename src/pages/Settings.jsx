@@ -4,17 +4,17 @@ import { Toast } from '../components/ui.jsx';
 
 export default function Settings() {
   const [toast, setToast] = useState(null);
-  const [upgrading, setUpgrading] = useState(false);
+const [upgrading, setUpgrading] = useState(false);
 
   function showToast(message, type = 'success') {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   }
 
-  async function handleUpgrade() {
-    setUpgrading(true);
+ async function handleUpgrade(plan) {
+    setUpgrading(plan);
     try {
-      const { url } = await api.createCheckout();
+      const { url } = await api.createCheckout(plan);
       window.location.href = url;
     } catch (e) {
       showToast(e.message, 'error');
@@ -76,8 +76,8 @@ export default function Settings() {
       </Section>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
-        <button
-          onClick={handleUpgrade}
+       <button
+          onClick={() => handleUpgrade('monthly')}
           disabled={upgrading}
           style={{
             padding: '12px 28px', borderRadius: 'var(--radius-md)',
@@ -85,7 +85,19 @@ export default function Settings() {
             fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
             opacity: upgrading ? 0.7 : 1,
           }}>
-          {upgrading ? 'Redirecting...' : 'Upgrade to Pro — $29/mo'}
+          {upgrading === 'monthly' ? 'Redirecting...' : 'Monthly — $29/mo'}
+        </button>
+        <button
+          onClick={() => handleUpgrade('yearly')}
+          disabled={upgrading}
+          style={{
+            padding: '12px 28px', borderRadius: 'var(--radius-md)',
+            background: 'var(--ink)', color: '#F7F5F0',
+            fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
+            opacity: upgrading ? 0.7 : 1,
+          }}>
+          {upgrading === 'yearly' ? 'Redirecting...' : 'Annual — $279/yr (save $69)'}
+        </button>
         </button>
         <button onClick={() => showToast('Settings saved')} style={{
           padding: '12px 28px', borderRadius: 'var(--radius-md)',
