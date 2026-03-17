@@ -1,108 +1,176 @@
-// src/components/AppShell.jsx
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
+import { isDemoMode, enableDemoMode, disableDemoMode } from '../demo.js';
 
 const NAV = [
-  { to: '/dashboard',           icon: '◈', label: 'Reviews' },
-  { to: '/dashboard/analytics', icon: '◉', label: 'Health' },
-  { to: '/dashboard/locations', icon: '⊡', label: 'Locations' },
-  { to: '/dashboard/billing',   icon: '◎', label: 'Billing' },
-  { to: '/dashboard/settings',  icon: '◌', label: 'Settings' },
+  { to: '/dashboard',            icon: '◈', label: 'Reviews'   },
+  { to: '/dashboard/analytics',  icon: '◉', label: 'Health'    },
+  { to: '/dashboard/locations',  icon: '⊡', label: 'Locations' },
+  { to: '/dashboard/billing',    icon: '◎', label: 'Billing'   },
+  { to: '/dashboard/settings',   icon: '◌', label: 'Settings'  },
 ];
 
-export default function AppShell({ user, onLogout }) {  const navigate = useNavigate();
+export default function AppShell({ user }) {
+  const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
+  const demo = isDemoMode();
 
-async function handleLogout() {
+  async function handleLogout() {
     setLoggingOut(true);
-    await onLogout();
+    if (demo) { disableDemoMode(); navigate('/'); return; }
+    await api.logout().catch(() => {});
     navigate('/');
   }
 
+  function toggleDemo() {
+    if (demo) disableDemoMode(); else enableDemoMode();
+    window.location.reload();
+  }
+
+  const displayUser = demo
+    ? { name: 'Mesa Group', email: 'Demo account' }
+    : user;
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* ── Sidebar ─────────────────────────────────────────── */}
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
+
+      {/* Sidebar */}
       <aside style={{
-        width: 220,
-        background: 'var(--ink)',
-        color: '#F7F5F0',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
+        width: 224, background: 'var(--ink)', color: '#F7F5F0',
+        display: 'flex', flexDirection: 'column', flexShrink: 0,
+        position: 'sticky', top: 0, height: '100vh',
+        borderRight: '1px solid rgba(247,245,240,0.06)',
       }}>
-        {/* Logo */}
-        <div style={{ padding: '28px 24px 20px' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, lineHeight: 1, letterSpacing: '-0.01em' }}>
-            <span style={{ color: '#F7F5F0' }}>reviewz</span><span style={{ color: '#5DCAA5' }}>health</span>
+
+        {/* Wordmark */}
+        <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid rgba(247,245,240,0.06)' }}>
+          <div style={{
+            fontFamily: 'var(--font-display)', fontSize: 21,
+            color: '#F7F5EF', lineHeight: 1.15, letterSpacing: '-0.01em',
+          }}>
+            reviewz<span style={{ color: '#1D9E75' }}>health</span>
           </div>
-          <div style={{ fontSize: 11, color: 'rgba(247,245,240,0.35)', marginTop: 6, letterSpacing: '0.05em' }}>
-            POWERED BY CLAUDE AI
-          </div>
+          {demo && (
+            <div style={{
+              marginTop: 6, display: 'inline-flex', alignItems: 'center', gap: 5,
+              padding: '2px 8px', borderRadius: 99,
+              background: 'rgba(29,158,117,0.15)', border: '1px solid rgba(29,158,117,0.3)',
+              fontSize: 10, fontWeight: 600, color: '#1D9E75', letterSpacing: '0.05em',
+            }}>
+              ◉ DEMO
+            </div>
+          )}
         </div>
 
-        {/* Nav links */}
-        <nav style={{ flex: 1, padding: '8px 12px' }}>
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '10px 10px', overflowY: 'auto' }}>
           {NAV.map(({ to, icon, label }) => (
-            <NavLink key={to} to={to} end={to === '/dashboard'} style={({ isActive }) => ({
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '10px 12px', borderRadius: 'var(--radius-md)',
-              fontSize: 14, fontWeight: 400,
-              color: isActive ? '#F7F5F0' : 'rgba(247,245,240,0.5)',
-              background: isActive ? 'rgba(247,245,240,0.1)' : 'transparent',
-              marginBottom: 2, transition: 'all 0.15s',
-            })}>
-              <span style={{ fontSize: 16, opacity: 0.8 }}>{icon}</span>
+            <NavLink key={to} to={to} end={to === '/dashboard'}
+              style={({ isActive }) => ({
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '9px 12px', borderRadius: 'var(--radius-md)',
+                fontSize: 13, fontWeight: isActive ? 500 : 400,
+                color: isActive ? '#F7F5EF' : 'rgba(247,245,240,0.45)',
+                background: isActive ? 'rgba(247,245,240,0.09)' : 'transparent',
+                marginBottom: 1, transition: 'all 0.12s', textDecoration: 'none',
+              })}>
+              <span style={{ fontSize: 15, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
               {label}
             </NavLink>
           ))}
         </nav>
 
+        {/* Demo toggle */}
+        <div style={{ padding: '10px 10px 0' }}>
+          <button onClick={toggleDemo} style={{
+            width: '100%', padding: '8px 12px', borderRadius: 'var(--radius-md)',
+            fontSize: 12, fontWeight: 500, cursor: 'pointer', textAlign: 'left',
+            display: 'flex', alignItems: 'center', gap: 8,
+            border: `1px solid ${demo ? 'rgba(29,158,117,0.4)' : 'rgba(247,245,240,0.1)'}`,
+            background: demo ? 'rgba(29,158,117,0.12)' : 'transparent',
+            color: demo ? '#1D9E75' : 'rgba(247,245,240,0.35)',
+            transition: 'all 0.15s',
+          }}>
+            <span style={{ fontSize: 13 }}>{demo ? '◉' : '◎'}</span>
+            {demo ? 'Exit demo mode' : 'Demo mode'}
+          </button>
+        </div>
+
         {/* User + logout */}
-        <div style={{
-          padding: '16px 16px 24px',
-          borderTop: '1px solid rgba(247,245,240,0.1)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            {user?.avatar_url
-              ? <img src={user.avatar_url} alt="" width={32} height={32}
-                  style={{ borderRadius: '50%', objectFit: 'cover' }} />
+        <div style={{ padding: '12px 10px 20px', marginTop: 6 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 12px', borderRadius: 'var(--radius-md)',
+            background: 'rgba(247,245,240,0.05)',
+            marginBottom: 6,
+          }}>
+            {!demo && user?.avatar_url
+              ? <img src={user.avatar_url} alt="" width={30} height={30}
+                  style={{ borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
               : <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: 'rgba(247,245,240,0.15)',
+                  width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
+                  background: demo ? 'rgba(29,158,117,0.3)' : 'rgba(247,245,240,0.12)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 13, color: '#F7F5F0',
+                  fontSize: 12, fontWeight: 600,
+                  color: demo ? '#1D9E75' : '#F7F5EF',
                 }}>
-                  {(user?.name ?? 'U')[0]}
+                  {(displayUser?.name ?? 'U')[0].toUpperCase()}
                 </div>
             }
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13, color: '#F7F5F0', fontWeight: 500,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {user?.name ?? 'Owner'}
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{
+                fontSize: 12, fontWeight: 500, color: '#F7F5EF',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {displayUser?.name ?? 'Owner'}
               </div>
-              <div style={{ fontSize: 11, color: 'rgba(247,245,240,0.4)',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {user?.email}
+              <div style={{
+                fontSize: 11, color: 'rgba(247,245,240,0.35)',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {displayUser?.email}
               </div>
             </div>
           </div>
+
           <button onClick={handleLogout} disabled={loggingOut} style={{
-            width: '100%', padding: '8px 12px', borderRadius: 'var(--radius-sm)',
-            fontSize: 13, color: 'rgba(247,245,240,0.5)',
-            border: '1px solid rgba(247,245,240,0.12)',
-            background: 'transparent', transition: 'all 0.15s',
+            width: '100%', padding: '7px 12px', borderRadius: 'var(--radius-md)',
+            fontSize: 12, color: 'rgba(247,245,240,0.35)',
+            border: '1px solid rgba(247,245,240,0.08)',
+            background: 'transparent', cursor: 'pointer',
+            transition: 'all 0.15s', textAlign: 'center',
           }}>
             {loggingOut ? 'Signing out…' : 'Sign out'}
           </button>
         </div>
       </aside>
 
-      {/* ── Main content ────────────────────────────────────── */}
-      <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+      {/* Main content */}
+      <main style={{
+        flex: 1, minWidth: 0,
+        display: 'flex', flexDirection: 'column',
+        background: 'var(--bg)',
+      }}>
+        {demo && (
+          <div style={{
+            background: 'rgba(29,158,117,0.08)',
+            borderBottom: '1px solid rgba(29,158,117,0.2)',
+            padding: '8px 24px',
+            display: 'flex', alignItems: 'center', gap: 8,
+            fontSize: 12, color: '#1D9E75', fontWeight: 500,
+          }}>
+            <span>◉</span>
+            Demo mode active — showing Mesa Group sample data. This is not real customer data.
+            <button onClick={toggleDemo} style={{
+              marginLeft: 'auto', fontSize: 11, color: '#1D9E75',
+              background: 'none', border: 'none', cursor: 'pointer',
+              textDecoration: 'underline', fontWeight: 500,
+            }}>
+              Exit demo
+            </button>
+          </div>
+        )}
         <Outlet />
       </main>
     </div>
