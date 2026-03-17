@@ -241,7 +241,6 @@ export default function Settings() {
         </p>
       </div>
 
-      {/* Account preferences */}
       <Section title="AI response preferences">
         <Field label="Business name" hint="Used in sign-offs and personalization">
           <input type="text" placeholder="e.g. Maple Street Cafe" style={inputStyle} />
