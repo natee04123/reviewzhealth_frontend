@@ -2,49 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api.js';
 import { Toast, Spinner } from '../components/ui.jsx';
 
-const PLANS = [
-  {
-    key: 'starter',
-    name: 'Starter',
-    monthlyPrice: 29,
-    yearlyPrice: 290,
-    locations: '1–3 locations',
-    maxLocations: 3,
-    features: ['Up to 3 locations', 'Unlimited AI responses', 'Email notifications', 'Review health dashboard', 'Approve / edit / dismiss'],
-  },
-  {
-    key: 'growth',
-    name: 'Growth',
-    monthlyPrice: 79,
-    yearlyPrice: 790,
-    locations: '4–9 locations',
-    maxLocations: 9,
-    features: ['Up to 9 locations', 'Everything in Starter', 'Priority support', 'Response analytics', 'Custom tone settings'],
-    popular: true,
-  },
-  {
-    key: 'agency',
-    name: 'Agency',
-    monthlyPrice: 149,
-    yearlyPrice: 1490,
-    locations: '10+ locations',
-    maxLocations: 999,
-    features: ['Unlimited locations', 'Everything in Growth', 'White-label options', 'Bulk location onboarding', 'Dedicated support'],
-  },
+const TIERS = [
+  { key: 'starter',    label: 'Starter',    range: '1–3 locations',   monthly: 29,  yearly: 290,  color: 'var(--ink)' },
+  { key: 'growth',     label: 'Growth',     range: '4–9 locations',   monthly: 19,  yearly: 190,  color: 'var(--green)', popular: true },
+  { key: 'agency',     label: 'Agency',     range: '10–24 locations', monthly: 15,  yearly: 150,  color: 'var(--ink)' },
+  { key: 'enterprise', label: 'Enterprise', range: '25+ locations',   monthly: 12,  yearly: 120,  color: 'var(--ink)' },
 ];
+
+function getTierForCount(count) {
+  if (count <= 3)  return 'starter';
+  if (count <= 9)  return 'growth';
+  if (count <= 24) return 'agency';
+  return 'enterprise';
+}
 
 export default function Settings() {
   const [toast, setToast]           = useState(null);
-  const [upgrading, setUpgrading]   = useState(null);
-  const [interval, setIntervalVal]  = useState('monthly');
-  const [billingStatus, setBilling] = useState(null);
-  const [loadingBilling, setLoadingBilling] = useState(true);
+  const [upgrading, setUpgrading]   = useState(false);
+  const [interval, setInterval]     = useState('monthly');
+  const [locationCount, setCount]   = useState(1);
+  const [billing, setBilling]       = useState(null);
+  const [loadingBilling, setLoading] = useState(true);
 
   useEffect(() => {
     api.getBillingStatus()
       .then(setBilling)
       .catch(() => {})
-      .finally(() => setLoadingBilling(false));
+      .finally(() => setLoading(false));
   }, []);
 
   function showToast(message, type = 'success') {
@@ -52,18 +36,23 @@ export default function Settings() {
     setTimeout(() => setToast(null), 4000);
   }
 
-  async function handleUpgrade(planKey) {
-    setUpgrading(planKey);
+  async function handleUpgrade() {
+    setUpgrading(true);
     try {
-      const { url } = await api.createCheckout(planKey, interval);
+      const { url } = await api.createCheckout(locationCount, interval);
       window.location.href = url;
     } catch (e) {
       showToast(e.message, 'error');
-      setUpgrading(null);
+      setUpgrading(false);
     }
   }
 
-  const currentPlan = billingStatus?.plan ?? 'free';
+  const currentPlan = billing?.plan ?? 'free';
+  const activeTierKey = getTierForCount(locationCount);
+  const activeTier = TIERS.find(t => t.key === activeTierKey);
+  const pricePerLoc = activeTier ? (interval === 'yearly' ? activeTier.yearly : activeTier.monthly) : 0;
+  const totalPrice = pricePerLoc * locationCount;
+  const yearlySaving = locationCount > 0 ? (activeTier?.monthly ?? 0) * locationCount * 2 : 0;
 
   return (
     <div style={{ padding: '40px 48px', maxWidth: 800, margin: '0 auto', width: '100%' }}>
@@ -75,7 +64,7 @@ export default function Settings() {
       </p>
 
       {/* Current plan status */}
-      {!loadingBilling && billingStatus && (
+      {!loadingBilling && billing && currentPlan !== 'free' && (
         <div style={{
           background: 'var(--green-bg)', border: '1px solid var(--green-border)',
           borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 28,
@@ -86,124 +75,160 @@ export default function Settings() {
               Current plan: {currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)}
             </div>
             <div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 2 }}>
-              {billingStatus.locationCount} of {billingStatus.maxLocations === 999 ? 'unlimited' : billingStatus.maxLocations} locations used
+              {billing.locationCount} location{billing.locationCount !== 1 ? 's' : ''} active
+              · ${billing.monthlyTotal}/mo
             </div>
           </div>
           <div style={{
             padding: '4px 12px', borderRadius: 99,
             background: 'var(--green)', color: '#fff',
             fontSize: 12, fontWeight: 500,
-          }}>
-            Active
-          </div>
+          }}>Active</div>
         </div>
       )}
 
-      {/* Billing interval toggle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <span style={{ fontSize: 14, color: 'var(--ink-2)' }}>Billing:</span>
-        <div style={{
-          display: 'flex', gap: 2, background: 'var(--bg-muted)',
-          borderRadius: 'var(--radius-md)', padding: 3,
-        }}>
-          {['monthly', 'yearly'].map(i => (
-            <button key={i} onClick={() => setIntervalVal(i)} style={{
-              padding: '6px 16px', borderRadius: 6, fontSize: 13,
-              fontWeight: interval === i ? 500 : 400,
-              background: interval === i ? 'var(--bg-card)' : 'transparent',
-              color: interval === i ? 'var(--ink)' : 'var(--ink-3)',
-              border: 'none', cursor: 'pointer',
-              boxShadow: interval === i ? 'var(--shadow-sm)' : 'none',
-            }}>
-              {i === 'yearly' ? 'Annual (save ~20%)' : 'Monthly'}
-            </button>
-          ))}
+      {/* Pricing calculator */}
+      <div style={{
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-xl)', padding: '28px 32px', marginBottom: 32,
+        boxShadow: 'var(--shadow-md)',
+      }}>
+        <div style={{ fontSize: 16, fontWeight: 500, color: 'var(--ink)', marginBottom: 4 }}>
+          Choose your plan
         </div>
-      </div>
+        <div style={{ fontSize: 14, color: 'var(--ink-2)', marginBottom: 24 }}>
+          Pricing scales with your locations — the more you have, the lower the per-location rate.
+        </div>
 
-      {/* Plan cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 32 }}>
-        {PLANS.map(plan => {
-          const isCurrent = currentPlan === plan.key;
-          const price = interval === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
-          const perMonth = interval === 'yearly' ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice;
-
-          return (
-            <div key={plan.key} style={{
-              background: 'var(--bg-card)',
-              border: `${plan.popular ? '2px' : '1px'} solid ${plan.popular ? 'var(--green)' : 'var(--border)'}`,
-              borderRadius: 'var(--radius-lg)', padding: '20px',
-              position: 'relative',
-              boxShadow: plan.popular ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-            }}>
-              {plan.popular && (
-                <div style={{
-                  position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
-                  background: 'var(--green)', color: '#fff',
-                  fontSize: 10, fontWeight: 600, padding: '3px 10px',
-                  borderRadius: 99, whiteSpace: 'nowrap', letterSpacing: '0.04em',
-                }}>
-                  MOST POPULAR
-                </div>
-              )}
-
-              <div style={{ marginBottom: 4, fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
-                {plan.name}
-              </div>
-              <div style={{ fontSize: 11, color: 'var(--ink-3)', marginBottom: 14 }}>
-                {plan.locations}
-              </div>
-
-              <div style={{ marginBottom: 16 }}>
-                <span style={{ fontSize: 28, fontWeight: 500, fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                  ${perMonth}
-                </span>
-                <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>/mo</span>
-                {interval === 'yearly' && (
-                  <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>
-                    Billed ${price}/yr
-                  </div>
-                )}
-              </div>
-
-              <ul style={{ listStyle: 'none', marginBottom: 18 }}>
-                {plan.features.map(f => (
-                  <li key={f} style={{
-                    fontSize: 12, color: 'var(--ink-2)', padding: '3px 0',
-                    display: 'flex', alignItems: 'flex-start', gap: 6,
-                  }}>
-                    <span style={{ color: 'var(--green)', flexShrink: 0, marginTop: 1 }}>✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              {isCurrent ? (
-                <div style={{
-                  width: '100%', padding: '9px', borderRadius: 'var(--radius-md)',
-                  background: 'var(--bg-muted)', color: 'var(--ink-3)',
-                  fontSize: 13, textAlign: 'center', border: '1px solid var(--border)',
-                }}>
-                  Current plan
-                </div>
-              ) : (
-                <button
-                  onClick={() => handleUpgrade(plan.key)}
-                  disabled={!!upgrading}
-                  style={{
-                    width: '100%', padding: '9px',
-                    borderRadius: 'var(--radius-md)',
-                    background: plan.popular ? 'var(--green)' : 'var(--ink)',
-                    color: '#fff', fontSize: 13, fontWeight: 500,
-                    border: 'none', cursor: 'pointer',
-                    opacity: upgrading ? 0.7 : 1,
-                  }}>
-                  {upgrading === plan.key ? 'Redirecting...' : `Upgrade to ${plan.name}`}
-                </button>
-              )}
+        {/* Location count input */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink)', display: 'block', marginBottom: 8 }}>
+            How many locations do you want to connect?
+          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button onClick={() => setCount(c => Math.max(1, c - 1))} style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border)', background: 'var(--bg)',
+              fontSize: 18, cursor: 'pointer', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+            }}>−</button>
+            <input
+              type="number" min="1" max="999"
+              value={locationCount}
+              onChange={e => setCount(Math.max(1, parseInt(e.target.value) || 1))}
+              style={{
+                width: 80, textAlign: 'center', padding: '8px',
+                border: '1px solid var(--border)', borderRadius: 'var(--radius-md)',
+                fontSize: 18, fontWeight: 500, color: 'var(--ink)',
+                background: 'var(--bg)',
+              }}
+            />
+            <button onClick={() => setCount(c => c + 1)} style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border)', background: 'var(--bg)',
+              fontSize: 18, cursor: 'pointer', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+            }}>+</button>
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginLeft: 4 }}>
+              locations
             </div>
-          );
-        })}
+          </div>
+        </div>
+
+        {/* Tier indicators */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 20 }}>
+          {TIERS.map(tier => {
+            const isActive = activeTierKey === tier.key;
+            return (
+              <div key={tier.key} style={{
+                padding: '10px 12px', borderRadius: 'var(--radius-md)',
+                border: `${isActive ? '2px' : '1px'} solid ${isActive ? 'var(--green)' : 'var(--border)'}`,
+                background: isActive ? 'var(--green-bg)' : 'var(--bg)',
+                transition: 'all 0.2s',
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 500, color: isActive ? 'var(--green)' : 'var(--ink-2)', marginBottom: 2 }}>
+                  {tier.label}
+                </div>
+                <div style={{ fontSize: 11, color: isActive ? 'var(--green)' : 'var(--ink-3)', marginBottom: 4 }}>
+                  {tier.range}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 500, color: isActive ? 'var(--green)' : 'var(--ink)' }}>
+                  ${interval === 'yearly' ? tier.yearly : tier.monthly}
+                  <span style={{ fontSize: 10, fontWeight: 400, color: isActive ? 'var(--green)' : 'var(--ink-3)' }}>/loc</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Billing interval toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <div style={{
+            display: 'flex', gap: 2, background: 'var(--bg-muted)',
+            borderRadius: 'var(--radius-md)', padding: 3,
+          }}>
+            {['monthly', 'yearly'].map(i => (
+              <button key={i} onClick={() => setInterval(i)} style={{
+                padding: '6px 16px', borderRadius: 6, fontSize: 13,
+                fontWeight: interval === i ? 500 : 400,
+                background: interval === i ? 'var(--bg-card)' : 'transparent',
+                color: interval === i ? 'var(--ink)' : 'var(--ink-3)',
+                border: 'none', cursor: 'pointer',
+                boxShadow: interval === i ? 'var(--shadow-sm)' : 'none',
+              }}>
+                {i === 'yearly' ? 'Annual' : 'Monthly'}
+              </button>
+            ))}
+          </div>
+          {interval === 'yearly' && (
+            <span style={{
+              fontSize: 12, padding: '3px 10px', borderRadius: 99,
+              background: 'var(--green-bg)', color: 'var(--green)',
+              border: '1px solid var(--green-border)', fontWeight: 500,
+            }}>
+              Save ${yearlySaving.toLocaleString()} vs monthly
+            </span>
+          )}
+        </div>
+
+        {/* Price summary */}
+        <div style={{
+          background: 'var(--ink)', borderRadius: 'var(--radius-lg)',
+          padding: '20px 24px', marginBottom: 16,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div>
+            <div style={{ fontSize: 13, color: 'rgba(247,245,240,0.5)', marginBottom: 4 }}>
+              {locationCount} location{locationCount !== 1 ? 's' : ''} × ${pricePerLoc}/{interval === 'yearly' ? 'yr' : 'mo'} · {activeTier?.label} tier
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, color: '#F7F5EF', lineHeight: 1 }}>
+              ${totalPrice.toLocaleString()}
+              <span style={{ fontSize: 15, fontWeight: 300, color: 'rgba(247,245,240,0.5)' }}>
+                /{interval === 'yearly' ? 'yr' : 'mo'}
+              </span>
+            </div>
+            {interval === 'yearly' && (
+              <div style={{ fontSize: 12, color: 'rgba(247,245,240,0.4)', marginTop: 4 }}>
+                ${Math.round(totalPrice / 12).toLocaleString()}/mo billed annually
+              </div>
+            )}
+          </div>
+          <button
+            onClick={handleUpgrade}
+            disabled={upgrading}
+            style={{
+              padding: '12px 28px', borderRadius: 'var(--radius-md)',
+              background: 'var(--green)', color: '#fff',
+              fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
+              opacity: upgrading ? 0.7 : 1, flexShrink: 0,
+            }}>
+            {upgrading ? 'Redirecting...' : currentPlan === 'free' ? 'Get started' : 'Update plan'}
+          </button>
+        </div>
+
+        <p style={{ fontSize: 12, color: 'var(--ink-3)', textAlign: 'center' }}>
+          No setup fees · Cancel any time · Add or remove locations at any time
+        </p>
       </div>
 
       {/* Account preferences */}
@@ -238,9 +263,7 @@ export default function Settings() {
             padding: '8px 14px', borderRadius: 'var(--radius-md)',
             border: '1px solid var(--red-border)', color: 'var(--red)',
             background: 'var(--red-bg)', fontSize: 13, cursor: 'pointer',
-          }}>
-            Disconnect
-          </button>
+          }}>Disconnect</button>
         </div>
       </Section>
 
