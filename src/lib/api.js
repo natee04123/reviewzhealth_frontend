@@ -1,55 +1,99 @@
-const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+import {
+  isDemoMode, DEMO_USER, DEMO_LOCATIONS,
+  DEMO_REVIEWS, DEMO_ANALYTICS, DEMO_BILLING,
+} from '../demo.js';
+
+const BASE = import.meta.env.VITE_API_BASE_URL;
 
 function getToken() {
   return localStorage.getItem('rzh_token');
 }
 
-export function saveToken(token) {
-  localStorage.setItem('rzh_token', token);
-}
-
-export function clearToken() {
-  localStorage.removeItem('rzh_token');
-}
-
 async function request(path, options = {}) {
-  const token = getToken();
-  const res = await fetch(BASE + path, {
+  const res = await fetch(`${BASE}${path}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'x-auth-token': token } : {}),
-      ...options.headers,
+      'x-auth-token': getToken() || '',
+      ...(options.headers || {}),
     },
-    ...options,
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error ?? `Request failed: ${res.status}`);
+    throw new Error(err.error || 'Request failed');
   }
-
   return res.json();
 }
 
 export const api = {
-  getMe:       ()          => request('/auth/me'),
-  logout:      ()          => request('/auth/logout', { method: 'POST' }),
+  // Auth
+  getMe: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_USER);
+    return request('/api/auth/me');
+  },
+  logout: () => {
+    if (isDemoMode()) return Promise.resolve();
+    return request('/api/auth/logout', { method: 'POST' });
+  },
 
-  getLocations:        ()   => request('/api/locations'),
-  syncLocations:       ()   => request('/api/locations/sync', { method: 'POST' }),
-  enableNotifications: (id) => request(`/api/locations/${id}/enable-notifications`, { method: 'POST' }),
+  // Locations
+  getLocations: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_LOCATIONS);
+    return request('/api/locations');
+  },
+  syncLocations: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_LOCATIONS);
+    return request('/api/locations/sync', { method: 'POST' });
+  },
+  enableNotifications: (id) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/locations/${id}/enable-notifications`, { method: 'POST' });
+  },
 
-  getReviews:   (status) => request(`/api/reviews${status ? `?status=${status}` : ''}`),
-  getReview:    (id)     => request(`/api/reviews/${id}`),
-  approveReview:(id, editedText) =>
-    request(`/api/reviews/${id}/approve`, { method: 'POST', body: { editedText } }),
-  regenerate:  (id)     => request(`/api/reviews/${id}/regenerate`, { method: 'POST' }),
-  dismiss:     (id)     => request(`/api/reviews/${id}/dismiss`, { method: 'POST' }),
-// Billing
-  getPlans:         ()                           => request('/api/billing/plans'),
-  getBillingStatus: ()                           => request('/api/billing/status'),
-  createCheckout:   (locationCount, interval)    => request('/api/billing/checkout', { method: 'POST', body: { locationCount, interval } }),
+  // Reviews
+  getReviews: (params = {}) => {
+    if (isDemoMode()) {
+      let reviews = [...DEMO_REVIEWS];
+      if (params.status) reviews = reviews.filter(r => r.draft_status === params.status);
+      return Promise.resolve(reviews);
+    }
+    const q = new URLSearchParams(params).toString();
+    return request(`/api/reviews${q ? '?' + q : ''}`);
+  },
+  getReview: (id) => {
+    if (isDemoMode()) return Promise.resolve(DEMO_REVIEWS.find(r => r.id === id));
+    return request(`/api/reviews/${id}`);
+  },
+  approveReview: (id) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/reviews/${id}/approve`, { method: 'POST' });
+  },
+  editReview: (id, text) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/reviews/${id}/edit`, { method: 'POST', body: { text } });
+  },
+  dismissReview: (id) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/reviews/${id}/dismiss`, { method: 'POST' });
+  },
+  regenerateReview: (id) => {
+    if (isDemoMode()) return Promise.resolve({ draft_text: DEMO_REVIEWS.find(r => r.id === id)?.draft_text });
+    return request(`/api/reviews/${id}/regenerate`, { method: 'POST' });
+  },
+
   // Analytics
-  getAnalytics: () => request('/api/analytics'),
+  getAnalytics: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_ANALYTICS);
+    return request('/api/analytics');
+  },
+
+  // Billing
+  getPlans:         ()                        => request('/api/billing/plans'),
+  getBillingStatus: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_BILLING);
+    return request('/api/billing/status');
+  },
+  createCheckout: (locationCount, interval) =>
+    request('/api/billing/checkout', { method: 'POST', body: { locationCount, interval } }),
 };
