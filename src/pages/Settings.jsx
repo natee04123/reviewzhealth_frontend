@@ -4,14 +4,14 @@ import { Toast } from '../components/ui.jsx';
 
 export default function Settings() {
   const [toast, setToast] = useState(null);
-const [upgrading, setUpgrading] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
 
   function showToast(message, type = 'success') {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   }
 
- async function handleUpgrade(plan) {
+  async function handleUpgrade(plan) {
     setUpgrading(plan);
     try {
       const { url } = await api.createCheckout(plan);
@@ -35,14 +35,14 @@ const [upgrading, setUpgrading] = useState(false);
         <Field label="Business name" hint="Used in sign-offs and personalization">
           <input type="text" placeholder="e.g. Maple Street Cafe" style={inputStyle} />
         </Field>
-        <Field label="Owner / manager name" hint="Used in sign-offs (e.g. 'Thanks, Sarah')">
+        <Field label="Owner / manager name" hint="Used in sign-offs (e.g. Thanks, Sarah)">
           <input type="text" placeholder="e.g. Sarah" style={inputStyle} />
         </Field>
         <Field label="Custom sign-off" hint="Overrides the default. Leave blank to use owner name.">
           <input type="text" placeholder="e.g. The Maple Street Team" style={inputStyle} />
         </Field>
         <Field label="Topics to always mention" hint="The AI will weave these in where relevant">
-          <textarea placeholder="e.g. Our loyalty card, free parking on Main St, our new brunch menu…"
+          <textarea placeholder="e.g. Our loyalty card, free parking on Main St"
             rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
         </Field>
       </Section>
@@ -56,9 +56,41 @@ const [upgrading, setUpgrading] = useState(false);
         <Toggle label="Notify me if a reply fails to post" defaultChecked />
       </Section>
 
+      <Section title="Upgrade plan">
+        <div style={{ padding: '20px' }}>
+          <p style={{ fontSize: 14, color: 'var(--ink-2)', marginBottom: 16 }}>
+            Choose a plan to unlock unlimited AI-drafted responses for your locations.
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => handleUpgrade('monthly')}
+              disabled={!!upgrading}
+              style={{
+                padding: '12px 24px', borderRadius: 'var(--radius-md)',
+                background: 'var(--green)', color: '#fff',
+                fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                opacity: upgrading ? 0.7 : 1,
+              }}>
+              {upgrading === 'monthly' ? 'Redirecting...' : 'Monthly - $29/mo'}
+            </button>
+            <button
+              onClick={() => handleUpgrade('yearly')}
+              disabled={!!upgrading}
+              style={{
+                padding: '12px 24px', borderRadius: 'var(--radius-md)',
+                background: 'var(--ink)', color: '#F7F5F0',
+                fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                opacity: upgrading ? 0.7 : 1,
+              }}>
+              {upgrading === 'yearly' ? 'Redirecting...' : 'Annual - $279/yr (save $69)'}
+            </button>
+          </div>
+        </div>
+      </Section>
+
       <Section title="Account">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
+          padding: '16px 20px' }}>
           <div>
             <div style={{ fontSize: 14, fontWeight: 500 }}>Disconnect Google account</div>
             <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 2 }}>
@@ -75,38 +107,14 @@ const [upgrading, setUpgrading] = useState(false);
         </div>
       </Section>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 8, flexWrap: 'wrap' }}>
-       <button
-          onClick={() => handleUpgrade('monthly')}
-          disabled={upgrading}
-          style={{
-            padding: '12px 28px', borderRadius: 'var(--radius-md)',
-            background: 'var(--green)', color: '#fff',
-            fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
-            opacity: upgrading ? 0.7 : 1,
-          }}>
-          {upgrading === 'monthly' ? 'Redirecting...' : 'Monthly — $29/mo'}
-        </button>
-        <button
-          onClick={() => handleUpgrade('yearly')}
-          disabled={upgrading}
-          style={{
-            padding: '12px 28px', borderRadius: 'var(--radius-md)',
-            background: 'var(--ink)', color: '#F7F5F0',
-            fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
-            opacity: upgrading ? 0.7 : 1,
-          }}>
-          {upgrading === 'yearly' ? 'Redirecting...' : 'Annual — $279/yr (save $69)'}
-        </button>
-        </button>
-        <button onClick={() => showToast('Settings saved')} style={{
-          padding: '12px 28px', borderRadius: 'var(--radius-md)',
-          background: 'var(--ink)', color: '#F7F5F0',
-          fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
-        }}>
-          Save settings
-        </button>
-      </div>
+      <button onClick={() => showToast('Settings saved')} style={{
+        padding: '12px 28px', borderRadius: 'var(--radius-md)',
+        background: 'var(--ink)', color: '#F7F5F0',
+        fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer',
+        marginTop: 8,
+      }}>
+        Save settings
+      </button>
 
       {toast && <Toast {...toast} onDismiss={() => setToast(null)} />}
     </div>
