@@ -9,6 +9,7 @@ import Locations    from './pages/Locations.jsx';
 import Settings     from './pages/Settings.jsx';
 import { Spinner }  from './components/ui.jsx';
 import Analytics from './pages/Analytics.jsx';
+import Billing from './pages/Billing.jsx';
 
 function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="locations"   element={<Locations />} />
           <Route path="settings"    element={<Settings />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="billing" element={<Billing />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
