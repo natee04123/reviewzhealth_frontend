@@ -4,9 +4,10 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 
 const NAV = [
-  { to: '/dashboard',           icon: '◈', label: 'Reviews' },
-  { to: '/dashboard/locations', icon: '⊡', label: 'Locations' },
-  { to: '/dashboard/settings',  icon: '◎', label: 'Settings' },
+  { to: '/dashboard',            icon: '◈', label: 'Reviews' },
+  { to: '/dashboard/analytics',  icon: '◉', label: 'Health' },
+  { to: '/dashboard/locations',  icon: '⊡', label: 'Locations' },
+  { to: '/dashboard/settings',   icon: '◎', label: 'Settings' },
 ];
 
 export default function AppShell({ user, onLogout }) {  const navigate = useNavigate();
