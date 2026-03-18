@@ -291,5 +291,61 @@ useEffect(() => {
         </div>
       )}
     </div>
+    {/* Platform breakdown — shows when data has platformBreakdown */}
+      {data.platformBreakdown?.length > 0 && (
+        <>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em',
+            textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>
+            By platform
+          </div>
+          <div style={{
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)', overflow: 'hidden',
+            marginBottom: 20, boxShadow: 'var(--shadow-sm)',
+          }}>
+            {data.platformBreakdown.map((p, i) => (
+              <div key={p.platform} style={{
+                display: 'grid', gridTemplateColumns: '120px 1fr 80px 80px',
+                alignItems: 'center', gap: 16,
+                padding: '12px 20px',
+                borderBottom: i < data.platformBreakdown.length - 1
+                  ? '1px solid var(--border)' : 'none',
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink)' }}>
+                  {p.platform}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{
+                    flex: 1, height: 6, background: 'var(--bg-muted)',
+                    borderRadius: 99, overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      width: `${(p.avgRating / 5) * 100}%`, height: '100%',
+                      background: p.avgRating >= 4.5 ? '#3B6D11'
+                        : p.avgRating >= 4.0 ? '#639922'
+                        : p.avgRating >= 3.5 ? '#EF9F27' : '#E24B4A',
+                      borderRadius: 99, transition: 'width 1s ease',
+                    }}/>
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 500,
+                    color: 'var(--ink)', width: 28, flexShrink: 0 }}>
+                    {p.avgRating}★
+                  </span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--ink-3)', textAlign: 'right' }}>
+                  {p.reviewCount} reviews
+                </div>
+                <div style={{
+                  fontSize: 12, textAlign: 'right', fontWeight: 500,
+                  color: p.responseRate >= 80 ? 'var(--green)'
+                    : p.responseRate >= 50 ? '#BA7517' : 'var(--red)',
+                }}>
+                  {p.responseRate}% replied
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
   );
 }
