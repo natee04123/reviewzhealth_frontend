@@ -52,10 +52,16 @@ export const api = {
   },
 
   // Reviews
-  getReviews: (params = {}) => {
+ getReviews: (params = {}) => {
     if (isDemoMode()) {
       let reviews = [...DEMO_REVIEWS];
-      if (params.status) reviews = reviews.filter(r => r.draft_status === params.status);
+      if (params.status === 'pending') {
+        reviews = reviews.filter(r => r.draft_status === 'pending');
+      } else if (params.status === 'posted') {
+        reviews = reviews.filter(r => r.draft_status === 'posted');
+      } else if (params.status === 'dismissed') {
+        reviews = reviews.filter(r => r.draft_status === 'dismissed');
+      }
       return Promise.resolve(reviews);
     }
     const q = new URLSearchParams(params).toString();
