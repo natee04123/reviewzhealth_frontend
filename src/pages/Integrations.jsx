@@ -28,10 +28,7 @@ function BrandLogo({ slug, color, size = 24 }) {
   return (
     <img
       src={`https://cdn.simpleicons.org/${slug}/${color.replace('#', '')}`}
-      width={size}
-      height={size}
-      alt=""
-      style={{ display: 'block' }}
+      width={size} height={size} alt="" style={{ display:'block' }}
     />
   );
 }
@@ -46,9 +43,9 @@ const PLATFORMS = [
   {
     key: 'google',
     name: 'Google Business Profile',
-    description: 'Sync reviews from Google Maps and Google Search. Respond to reviews directly from reviewzhealth.',
+    description: 'Sync reviews from Google Maps and Google Search. Respond directly from reviewzhealth.',
     bg: '#EBF3FE', border: '#A8C7FA',
-    status: 'available',
+    connectionType: 'oauth',
     features: ['Read all reviews', 'Post owner replies', 'Real-time notifications', 'Multi-location support'],
   },
   {
@@ -57,17 +54,23 @@ const PLATFORMS = [
     description: 'Manage reviews and recommendations from your Facebook Business Page.',
     slug: 'facebook', color: '#1877F2',
     bg: '#EBF3FE', border: '#A8C7FA',
-    status: 'coming_soon', eta: 'Q2 2026',
-    features: ['Read page reviews', 'Post owner replies', 'Recommendation tracking'],
+    connectionType: 'url',
+    urlLabel: 'Facebook Business Page URL',
+    urlPlaceholder: 'https://www.facebook.com/yourbusiness',
+    oauthNote: 'Full OAuth connection coming Q2 2026 — enter your page URL for now to enable deep linking.',
+    features: ['Read page reviews', 'Copy & respond via Facebook', 'Recommendation tracking'],
   },
   {
     key: 'yelp',
     name: 'Yelp',
-    description: 'Monitor and respond to Yelp reviews. Critical for restaurants, salons, and local businesses.',
+    description: 'Monitor and respond to Yelp reviews. Critical for restaurants and local businesses.',
     slug: 'yelp', color: '#D32323',
     bg: '#FDEAEA', border: '#F5A5A5',
-    status: 'coming_soon', eta: 'Q2 2026',
-    features: ['Read reviews', 'Post owner replies', 'Rating trend tracking'],
+    connectionType: 'url',
+    urlLabel: 'Yelp Business Page URL',
+    urlPlaceholder: 'https://www.yelp.com/biz/your-business',
+    oauthNote: 'Full OAuth connection coming Q2 2026 — enter your Yelp URL for now to enable deep linking.',
+    features: ['Read reviews', 'Copy & respond via Yelp', 'Rating trend tracking'],
   },
   {
     key: 'tripadvisor',
@@ -75,16 +78,20 @@ const PLATFORMS = [
     description: 'Stay on top of Tripadvisor reviews for restaurants, hotels, and attractions.',
     slug: 'tripadvisor', color: '#00AA6C',
     bg: '#E6F7F2', border: '#80D4B8',
-    status: 'coming_soon', eta: 'Q3 2026',
-    features: ['Read reviews', 'Post management responses', 'Hospitality insights'],
+    connectionType: 'url',
+    urlLabel: 'Tripadvisor Listing URL',
+    urlPlaceholder: 'https://www.tripadvisor.com/Restaurant_Review-...',
+    features: ['Read reviews', 'Copy & respond via Tripadvisor', 'Hospitality insights'],
   },
   {
     key: 'opentable',
     name: 'OpenTable',
     description: 'Manage verified diner reviews from OpenTable reservations.',
     bg: '#FDEAEA', border: '#F5A5A5',
-    status: 'coming_soon', eta: 'Q3 2026',
-    features: ['Verified diner reviews', 'Reservation-linked feedback', 'Response management'],
+    connectionType: 'url',
+    urlLabel: 'OpenTable Restaurant URL',
+    urlPlaceholder: 'https://www.opentable.com/r/your-restaurant',
+    features: ['Verified diner reviews', 'Copy & respond via OpenTable', 'Reservation-linked feedback'],
   },
   {
     key: 'ubereats',
@@ -92,8 +99,10 @@ const PLATFORMS = [
     description: 'Track your Uber Eats ratings and customer feedback across all your delivery locations.',
     slug: 'ubereats', color: '#000000',
     bg: '#F5F5F5', border: '#CCCCCC',
-    status: 'coming_soon', eta: 'Q4 2026',
-    features: ['Rating monitoring', 'Delivery feedback tracking', 'Analytics dashboard'],
+    connectionType: 'url',
+    urlLabel: 'Uber Eats Restaurant URL',
+    urlPlaceholder: 'https://www.ubereats.com/store/your-restaurant',
+    features: ['Rating monitoring', 'Copy & respond via Uber Eats', 'Delivery feedback tracking'],
   },
   {
     key: 'doordash',
@@ -101,18 +110,115 @@ const PLATFORMS = [
     description: 'Monitor DoorDash ratings and customer feedback for your delivery presence.',
     slug: 'doordash', color: '#FF3008',
     bg: '#FFF0EE', border: '#FFBBB3',
-    status: 'coming_soon', eta: 'Q4 2026',
-    features: ['Rating monitoring', 'Customer feedback tracking', 'Multi-location overview'],
+    connectionType: 'url',
+    urlLabel: 'DoorDash Restaurant URL',
+    urlPlaceholder: 'https://www.doordash.com/store/your-restaurant',
+    features: ['Rating monitoring', 'Copy & respond via DoorDash', 'Multi-location overview'],
   },
 ];
 
+function ConnectModal({ platform, onSave, onClose }) {
+  const [url, setUrl] = useState('');
+  const [error, setError] = useState('');
+
+  function handleSave() {
+    if (!url.trim()) { setError('Please enter a URL'); return; }
+    try { new URL(url.trim()); } catch {
+      setError('Please enter a valid URL including https://'); return;
+    }
+    onSave(url.trim());
+  }
+
+  return (
+    <div style={{
+      position:'fixed', inset:0, background:'rgba(0,0,0,0.4)',
+      display:'flex', alignItems:'center', justifyContent:'center',
+      zIndex:1000, padding:24,
+    }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{
+        background:'var(--bg-card)', borderRadius:'var(--radius-xl)',
+        padding:'28px 32px', width:'100%', maxWidth:480,
+        boxShadow:'var(--shadow-lg)',
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:20 }}>
+          <div style={{
+            width:40, height:40, borderRadius:'var(--radius-md)',
+            background:platform.bg, border:`1px solid ${platform.border}`,
+            display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+          }}>
+            <Logo platform={platform} size={22} />
+          </div>
+          <div>
+            <div style={{ fontSize:15, fontWeight:500, color:'var(--ink)' }}>
+              Connect {platform.name}
+            </div>
+            <div style={{ fontSize:12, color:'var(--ink-3)' }}>
+              Enter your business profile URL
+            </div>
+          </div>
+        </div>
+
+        {platform.oauthNote && (
+          <div style={{
+            background:'var(--bg-muted)', border:'1px solid var(--border)',
+            borderRadius:'var(--radius-md)', padding:'10px 14px',
+            fontSize:12, color:'var(--ink-2)', marginBottom:16, lineHeight:1.5,
+          }}>
+            ℹ {platform.oauthNote}
+          </div>
+        )}
+
+        <label style={{ fontSize:13, fontWeight:500, color:'var(--ink-2)',
+          display:'block', marginBottom:6 }}>
+          {platform.urlLabel}
+        </label>
+        <input
+          type="url"
+          value={url}
+          onChange={e => { setUrl(e.target.value); setError(''); }}
+          placeholder={platform.urlPlaceholder}
+          onKeyDown={e => e.key === 'Enter' && handleSave()}
+          autoFocus
+          style={{
+            width:'100%', padding:'10px 12px', fontSize:13,
+            borderRadius:'var(--radius-md)', marginBottom:error ? 6 : 16,
+            border:`1px solid ${error ? 'var(--red-border)' : 'var(--border)'}`,
+            background:'var(--bg)', color:'var(--ink)', outline:'none',
+          }}
+        />
+        {error && (
+          <div style={{ fontSize:12, color:'var(--red)', marginBottom:12 }}>{error}</div>
+        )}
+
+        <div style={{ display:'flex', gap:8 }}>
+          <button onClick={onClose} style={{
+            flex:1, padding:'10px', borderRadius:'var(--radius-md)',
+            background:'var(--bg-muted)', color:'var(--ink-2)',
+            border:'1px solid var(--border)', fontSize:13, fontWeight:500, cursor:'pointer',
+          }}>
+            Cancel
+          </button>
+          <button onClick={handleSave} style={{
+            flex:2, padding:'10px', borderRadius:'var(--radius-md)',
+            background:'var(--ink)', color:'var(--bg)',
+            border:'none', fontSize:13, fontWeight:500, cursor:'pointer',
+          }}>
+            Save & connect
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Integrations() {
   const [googleConnected, setGoogleConnected] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [notifyList, setNotifyList] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('rzh_notify') || '[]'); }
-    catch { return []; }
+  const [connections, setConnections] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('rzh_connections') || '{}'); }
+    catch { return {}; }
   });
+  const [modal, setModal] = useState(null);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     api.getMe()
@@ -125,184 +231,211 @@ export default function Integrations() {
     setTimeout(() => setToast(null), 4000);
   }
 
-  function toggleNotify(key) {
-    setNotifyList(prev => {
-      const updated = prev.includes(key)
-        ? prev.filter(k => k !== key)
-        : [...prev, key];
-      localStorage.setItem('rzh_notify', JSON.stringify(updated));
-      if (!prev.includes(key)) {
-        showToast(`We'll notify you when ${PLATFORMS.find(p => p.key === key)?.name} launches`);
-      }
-      return updated;
-    });
+  function saveConnection(key, url) {
+    const updated = { ...connections, [key]: url };
+    setConnections(updated);
+    localStorage.setItem('rzh_connections', JSON.stringify(updated));
+    setModal(null);
+    showToast(`${PLATFORMS.find(p => p.key === key)?.name} connected`);
   }
 
-  const available = PLATFORMS.filter(p => p.status === 'available');
-  const coming    = PLATFORMS.filter(p => p.status === 'coming_soon');
+  function disconnect(key) {
+    if (!window.confirm(`Disconnect ${PLATFORMS.find(p => p.key === key)?.name}?`)) return;
+    const updated = { ...connections };
+    delete updated[key];
+    setConnections(updated);
+    localStorage.setItem('rzh_connections', JSON.stringify(updated));
+    showToast(`${PLATFORMS.find(p => p.key === key)?.name} disconnected`, 'error');
+  }
+
+  function isConnected(platform) {
+    if (platform.key === 'google') return googleConnected;
+    return !!connections[platform.key];
+  }
+
+  const connected = PLATFORMS.filter(p => isConnected(p));
+  const notConnected = PLATFORMS.filter(p => !isConnected(p));
 
   return (
-    <div style={{ padding: '40px 48px', maxWidth: 900, margin: '0 auto', width: '100%' }}>
+    <div style={{ padding:'40px 48px', maxWidth:900, margin:'0 auto', width:'100%' }}>
 
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 400, marginBottom: 6 }}>
+      <div style={{ marginBottom:32 }}>
+        <h1 style={{ fontFamily:'var(--font-display)', fontSize:32, fontWeight:400, marginBottom:6 }}>
           Integrations
         </h1>
-        <p style={{ color: 'var(--ink-2)', fontSize: 15 }}>
+        <p style={{ color:'var(--ink-2)', fontSize:15 }}>
           Connect your review platforms. reviewzhealth centralizes all your customer feedback in one place.
         </p>
       </div>
 
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em',
-        textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>
-        Available now
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
-        {available.map(platform => (
-          <div key={platform.key} style={{
-            background: 'var(--bg-card)',
-            border: `1px solid ${googleConnected ? 'var(--green-border)' : 'var(--border)'}`,
-            borderRadius: 'var(--radius-lg)', padding: '20px 24px',
-            boxShadow: 'var(--shadow-sm)',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flex: 1 }}>
-                <div style={{
-                  width: 48, height: 48, borderRadius: 'var(--radius-md)', flexShrink: 0,
-                  background: platform.bg, border: `1px solid ${platform.border}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <Logo platform={platform} size={26} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink)' }}>
-                      {platform.name}
+      {/* Connected */}
+      {connected.length > 0 && (
+        <>
+          <div style={{ fontSize:11, fontWeight:600, letterSpacing:'0.07em',
+            textTransform:'uppercase', color:'var(--ink-3)', marginBottom:12 }}>
+            Connected ({connected.length})
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:36 }}>
+            {connected.map(platform => (
+              <div key={platform.key} style={{
+                background:'var(--bg-card)',
+                border:'1px solid var(--green-border)',
+                borderRadius:'var(--radius-lg)', padding:'20px 24px',
+                boxShadow:'var(--shadow-sm)',
+              }}>
+                <div style={{ display:'flex', alignItems:'center',
+                  justifyContent:'space-between', gap:16 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:14, flex:1, minWidth:0 }}>
+                    <div style={{
+                      width:46, height:46, borderRadius:'var(--radius-md)', flexShrink:0,
+                      background:platform.bg, border:`1px solid ${platform.border}`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                    }}>
+                      <Logo platform={platform} size={24} />
                     </div>
-                    {googleConnected && (
-                      <span style={{
-                        fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
-                        background: 'var(--green-bg)', color: 'var(--green)',
-                        border: '1px solid var(--green-border)', letterSpacing: '0.04em',
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:2 }}>
+                        <div style={{ fontSize:14, fontWeight:500, color:'var(--ink)' }}>
+                          {platform.name}
+                        </div>
+                        <span style={{
+                          fontSize:10, fontWeight:600, padding:'2px 7px', borderRadius:99,
+                          background:'var(--green-bg)', color:'var(--green)',
+                          border:'1px solid var(--green-border)', letterSpacing:'0.04em',
+                        }}>
+                          CONNECTED
+                        </span>
+                      </div>
+                      {platform.key !== 'google' && connections[platform.key] && (
+                        <div style={{ fontSize:12, color:'var(--ink-3)',
+                          overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
+                          maxWidth:400 }}>
+                          {connections[platform.key]}
+                        </div>
+                      )}
+                      {platform.key === 'google' && (
+                        <div style={{ fontSize:12, color:'var(--ink-3)' }}>
+                          Connected via Google OAuth
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ display:'flex', gap:8, flexShrink:0 }}>
+                    {platform.key === 'google' ? (
+                      <button onClick={() => window.location.href = '/dashboard/locations'} style={{
+                        padding:'8px 16px', borderRadius:'var(--radius-md)',
+                        background:'var(--bg-muted)', color:'var(--ink-2)',
+                        border:'1px solid var(--border)', fontSize:13,
+                        fontWeight:500, cursor:'pointer',
                       }}>
-                        CONNECTED
-                      </span>
+                        Manage →
+                      </button>
+                    ) : (
+                      <>
+                        <button onClick={() => setModal(platform)} style={{
+                          padding:'8px 14px', borderRadius:'var(--radius-md)',
+                          background:'var(--bg-muted)', color:'var(--ink-2)',
+                          border:'1px solid var(--border)', fontSize:12,
+                          fontWeight:500, cursor:'pointer',
+                        }}>
+                          Edit URL
+                        </button>
+                        <button onClick={() => disconnect(platform.key)} style={{
+                          padding:'8px 14px', borderRadius:'var(--radius-md)',
+                          background:'transparent', color:'var(--red)',
+                          border:'1px solid var(--red-border)', fontSize:12,
+                          fontWeight:500, cursor:'pointer',
+                        }}>
+                          Disconnect
+                        </button>
+                      </>
                     )}
                   </div>
-                  <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 12, lineHeight: 1.5 }}>
-                    {platform.description}
-                  </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {platform.features.map(f => (
-                      <span key={f} style={{
-                        fontSize: 11, padding: '3px 9px', borderRadius: 99,
-                        background: 'var(--bg-muted)', color: 'var(--ink-3)',
-                        border: '1px solid var(--border)',
-                      }}>
-                        ✓ {f}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
-              <div style={{ flexShrink: 0 }}>
-                {googleConnected ? (
-                  <button onClick={() => window.location.href = '/dashboard/locations'} style={{
-                    padding: '9px 18px', borderRadius: 'var(--radius-md)',
-                    background: 'var(--bg-muted)', color: 'var(--ink-2)',
-                    fontSize: 13, fontWeight: 500,
-                    border: '1px solid var(--border)', cursor: 'pointer',
-                  }}>
-                    Manage →
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`}
-                    style={{
-                      padding: '9px 18px', borderRadius: 'var(--radius-md)',
-                      background: '#4285F4', color: '#fff',
-                      fontSize: 13, fontWeight: 500,
-                      border: 'none', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 8,
-                    }}>
-                    <GoogleLogo size={18} /> Connect Google
-                  </button>
-                )}
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em',
-        textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>
-        Coming soon
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        {coming.map(platform => {
-          const isNotified = notifyList.includes(platform.key);
-          return (
-            <div key={platform.key} style={{
-              background: 'var(--bg-card)', border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-lg)', padding: '20px 24px',
-              boxShadow: 'var(--shadow-sm)', opacity: 0.85,
-              position: 'relative',
-            }}>
-              <div style={{
-                position: 'absolute', top: 14, right: 14,
-                fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
-                background: 'var(--bg-muted)', color: 'var(--ink-3)',
-                border: '1px solid var(--border)', letterSpacing: '0.04em',
+      {/* Not connected */}
+      {notConnected.length > 0 && (
+        <>
+          <div style={{ fontSize:11, fontWeight:600, letterSpacing:'0.07em',
+            textTransform:'uppercase', color:'var(--ink-3)', marginBottom:12 }}>
+            {connected.length > 0 ? `Add more (${notConnected.length})` : 'Available platforms'}
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+            {notConnected.map(platform => (
+              <div key={platform.key} style={{
+                background:'var(--bg-card)', border:'1px solid var(--border)',
+                borderRadius:'var(--radius-lg)', padding:'20px 24px',
+                boxShadow:'var(--shadow-sm)',
               }}>
-                {platform.eta}
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 12 }}>
-                <div style={{
-                  width: 42, height: 42, borderRadius: 'var(--radius-md)', flexShrink: 0,
-                  background: platform.bg, border: `1px solid ${platform.border}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <Logo platform={platform} size={22} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0, paddingRight: 56 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink)', marginBottom: 4 }}>
-                    {platform.name}
-                  </div>
-                  <p style={{ fontSize: 12, color: 'var(--ink-3)', lineHeight: 1.5 }}>
-                    {platform.description}
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 14 }}>
-                {platform.features.map(f => (
-                  <span key={f} style={{
-                    fontSize: 10, padding: '2px 7px', borderRadius: 99,
-                    background: 'var(--bg-muted)', color: 'var(--ink-3)',
-                    border: '1px solid var(--border)',
+                <div style={{ display:'flex', alignItems:'flex-start', gap:14, marginBottom:12 }}>
+                  <div style={{
+                    width:42, height:42, borderRadius:'var(--radius-md)', flexShrink:0,
+                    background:platform.bg, border:`1px solid ${platform.border}`,
+                    display:'flex', alignItems:'center', justifyContent:'center',
                   }}>
-                    {f}
-                  </span>
-                ))}
-              </div>
+                    <Logo platform={platform} size={22} />
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:14, fontWeight:500, color:'var(--ink)', marginBottom:4 }}>
+                      {platform.name}
+                    </div>
+                    <p style={{ fontSize:12, color:'var(--ink-3)', lineHeight:1.5 }}>
+                      {platform.description}
+                    </p>
+                  </div>
+                </div>
 
-              <button onClick={() => toggleNotify(platform.key)} style={{
-                width: '100%', padding: '8px', borderRadius: 'var(--radius-md)',
-                fontSize: 12, fontWeight: 500, cursor: 'pointer',
-                border: `1px solid ${isNotified ? 'var(--green-border)' : 'var(--border)'}`,
-                background: isNotified ? 'var(--green-bg)' : 'var(--bg)',
-                color: isNotified ? 'var(--green)' : 'var(--ink-3)',
-                transition: 'all 0.15s',
-              }}>
-                {isNotified ? '✓ Notified' : '🔔 Notify me when available'}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:5, marginBottom:14 }}>
+                  {platform.features.map(f => (
+                    <span key={f} style={{
+                      fontSize:10, padding:'2px 7px', borderRadius:99,
+                      background:'var(--bg-muted)', color:'var(--ink-3)',
+                      border:'1px solid var(--border)',
+                    }}>
+                      {f}
+                    </span>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (platform.key === 'google') {
+                      window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+                    } else {
+                      setModal(platform);
+                    }
+                  }}
+                  style={{
+                    width:'100%', padding:'9px', borderRadius:'var(--radius-md)',
+                    background:'var(--ink)', color:'var(--bg)',
+                    border:'none', fontSize:13, fontWeight:500, cursor:'pointer',
+                    display:'flex', alignItems:'center', justifyContent:'center', gap:7,
+                    transition:'opacity 0.15s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                >
+                  <Logo platform={platform} size={14} />
+                  Connect {platform.name}
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {modal && (
+        <ConnectModal
+          platform={modal}
+          onSave={(url) => saveConnection(modal.key, url)}
+          onClose={() => setModal(null)}
+        />
+      )}
 
       {toast && <Toast {...toast} onDismiss={() => setToast(null)} />}
     </div>
