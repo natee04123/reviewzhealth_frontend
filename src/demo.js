@@ -415,6 +415,7 @@ export const DEMO_ANALYTICS = {
     { platform: 'OpenTable',   avgRating: 4.3, reviewCount: 28,  responseRate: 82,  note: null },
     { platform: 'Uber Eats',   avgRating: 3.9, reviewCount: 16,  responseRate: 44,  note: null },
     { platform: 'DoorDash',    avgRating: 4.0, reviewCount: 10,  responseRate: 50,  note: null },
+   { platform: 'Grubhub', avgRating: 3.9, reviewCount: 8, responseRate: 38, note: null },
   ],
 };
 export const DEMO_BILLING = {
