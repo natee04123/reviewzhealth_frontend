@@ -282,13 +282,49 @@ function drawChart() {
             borderRadius:'var(--radius-lg)', overflow:'hidden',
             marginBottom:20, boxShadow:'var(--shadow-sm)',
           }}>
-            {data.platformBreakdown.map((p, i) => (
+           {data.platformBreakdown.map((p, i) => (
               <div key={p.platform} style={{
                 display:'grid', gridTemplateColumns:'130px 1fr 90px 90px',
                 alignItems:'center', gap:16, padding:'12px 20px',
                 borderBottom: i < data.platformBreakdown.length - 1
                   ? '1px solid var(--border)' : 'none',
               }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:500, color:'var(--ink)' }}>
+                    {p.platform}
+                  </div>
+                  {p.note && (
+                    <div style={{ fontSize:10, color:'var(--ink-3)', marginTop:2 }}>
+                      {p.note}
+                    </div>
+                  )}
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <div style={{ flex:1, height:6, background:'var(--bg-muted)', borderRadius:99, overflow:'hidden' }}>
+                    <div style={{
+                      width:`${(p.avgRating / 5) * 100}%`, height:'100%', borderRadius:99,
+                      background: p.avgRating >= 4.5 ? '#3B6D11'
+                        : p.avgRating >= 4.0 ? '#639922'
+                        : p.avgRating >= 3.5 ? '#EF9F27' : '#E24B4A',
+                      transition:'width 1s ease',
+                    }}/>
+                  </div>
+                  <span style={{ fontSize:13, fontWeight:500, color:'var(--ink)', width:30, flexShrink:0 }}>
+                    {p.avgRating}★
+                  </span>
+                </div>
+                <div style={{ fontSize:12, color:'var(--ink-3)', textAlign:'right' }}>
+                  {p.reviewCount} reviews
+                </div>
+                <div style={{
+                  fontSize:12, textAlign:'right', fontWeight:500,
+                  color: p.responseRate >= 80 ? '#1D9E75'
+                    : p.responseRate >= 50 ? '#BA7517' : '#E24B4A',
+                }}>
+                  {p.responseRate}% replied
+                </div>
+              </div>
+            ))}
                 <div style={{ fontSize:13, fontWeight:500, color:'var(--ink)' }}>
                   {p.platform}
                 </div>
