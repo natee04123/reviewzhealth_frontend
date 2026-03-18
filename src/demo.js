@@ -366,6 +366,41 @@ export const DEMO_ANALYTICS = {
     { month: 'Feb', avg_rating: '4.4', review_count: 44 },
     { month: 'Mar', avg_rating: '4.4', review_count: 57 },
   ],
+  platformTrend: {
+    labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+    platforms: [
+      {
+        name: 'Google',
+        color: '#4285F4',
+        data: [4.3, 4.4, 4.5, 4.6, 4.6, 4.7],
+      },
+      {
+        name: 'Yelp',
+        color: '#D32323',
+        data: [3.9, 4.0, 4.0, 4.1, 4.2, 4.2],
+      },
+      {
+        name: 'Tripadvisor',
+        color: '#00AA6C',
+        data: [4.2, 4.3, 4.4, 4.4, 4.5, 4.5],
+      },
+      {
+        name: 'OpenTable',
+        color: '#DA3743',
+        data: [4.1, 4.2, 4.2, 4.3, 4.3, 4.4],
+      },
+      {
+        name: 'Uber Eats',
+        color: '#000000',
+        data: [3.7, 3.8, 3.8, 3.9, 3.9, 4.0],
+      },
+      {
+        name: 'DoorDash',
+        color: '#FF3008',
+        data: [3.8, 3.9, 3.9, 4.0, 4.0, 4.1],
+      },
+    ],
+  },
   recentReviews: [],
   platformBreakdown: [
     { platform: 'Google',      avgRating: 4.6, reviewCount: 89,  responseRate: 91 },
@@ -376,7 +411,6 @@ export const DEMO_ANALYTICS = {
     { platform: 'DoorDash',    avgRating: 4.0, reviewCount: 10,  responseRate: 50 },
   ],
 };
-
 export const DEMO_BILLING = {
   plan: 'growth',
   locationCount: 3,
