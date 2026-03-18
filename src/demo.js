@@ -402,13 +402,14 @@ export const DEMO_ANALYTICS = {
     ],
   },
   recentReviews: [],
-  platformBreakdown: [
-    { platform: 'Google',      avgRating: 4.6, reviewCount: 89,  responseRate: 91 },
-    { platform: 'Yelp',        avgRating: 4.2, reviewCount: 48,  responseRate: 75 },
-    { platform: 'Tripadvisor', avgRating: 4.5, reviewCount: 31,  responseRate: 68 },
-    { platform: 'OpenTable',   avgRating: 4.3, reviewCount: 28,  responseRate: 82 },
-    { platform: 'Uber Eats',   avgRating: 3.9, reviewCount: 16,  responseRate: 44 },
-    { platform: 'DoorDash',    avgRating: 4.0, reviewCount: 10,  responseRate: 50 },
+ platformBreakdown: [
+    { platform: 'Google',      avgRating: 4.6, reviewCount: 89,  responseRate: 91,  note: null },
+    { platform: 'Facebook',    avgRating: 4.7, reviewCount: 54,  responseRate: 78,  note: '94% recommended · converted to 4.7★' },
+    { platform: 'Yelp',        avgRating: 4.2, reviewCount: 48,  responseRate: 75,  note: null },
+    { platform: 'Tripadvisor', avgRating: 4.5, reviewCount: 31,  responseRate: 68,  note: null },
+    { platform: 'OpenTable',   avgRating: 4.3, reviewCount: 28,  responseRate: 82,  note: null },
+    { platform: 'Uber Eats',   avgRating: 3.9, reviewCount: 16,  responseRate: 44,  note: null },
+    { platform: 'DoorDash',    avgRating: 4.0, reviewCount: 10,  responseRate: 50,  note: null },
   ],
 };
 export const DEMO_BILLING = {
