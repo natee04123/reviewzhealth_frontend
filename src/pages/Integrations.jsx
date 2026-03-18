@@ -23,6 +23,14 @@ function OpenTableLogo({ size = 24 }) {
     </svg>
   );
 }
+function GrubhubLogo({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="4" fill="#F63440"/>
+      <path d="M12 5C8.13 5 5 8.13 5 12s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7zm0 11c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm1-4.5V9.5h-2v3.5H8.5v2h3.5V19h2v-4h3.5v-2H13z" fill="white"/>
+    </svg>
+  );
+}
 
 function BrandLogo({ slug, color, size = 24 }) {
   return (
@@ -36,6 +44,7 @@ function BrandLogo({ slug, color, size = 24 }) {
 function Logo({ platform, size = 24 }) {
   if (platform.key === 'google')    return <GoogleLogo size={size} />;
   if (platform.key === 'opentable') return <OpenTableLogo size={size} />;
+  if (platform.key === 'grubhub')   return <GrubhubLogo size={size} />;
   return <BrandLogo slug={platform.slug} color={platform.color} size={size} />;
 }
 
@@ -115,11 +124,10 @@ const PLATFORMS = [
     urlPlaceholder: 'https://www.doordash.com/store/your-restaurant',
     features: ['Rating monitoring', 'Copy & respond via DoorDash', 'Multi-location overview'],
   },
-  {
+ {
     key: 'grubhub',
     name: 'Grubhub',
     description: 'Monitor Grubhub ratings and customer feedback for your delivery presence.',
-    slug: 'grubhub', color: '#F63440',
     bg: '#FFF0EE', border: '#FFBBB3',
     connectionType: 'url',
     urlLabel: 'Grubhub Restaurant URL',
