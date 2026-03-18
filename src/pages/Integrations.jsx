@@ -13,13 +13,13 @@ function GoogleLogo({ size = 24 }) {
   );
 }
 
-function OpenTableLogo({ size = 24 }) {
+function GrubhubLogo({ size = 24 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <rect width="24" height="24" rx="4" fill="#DA3743"/>
-      <circle cx="4.5" cy="13" r="2.2" fill="white"/>
-      <circle cx="14" cy="12" r="5.5" fill="white"/>
-      <circle cx="14" cy="12" r="2.8" fill="#DA3743"/>
+      <path d="M12 2L3 9.5h1.5V19c0 .55.45 1 1 1h13c.55 0 1-.45 1-1V9.5H21L12 2z" fill="#FF8000"/>
+      <rect x="10.5" y="20" width="3" height="1.5" rx="0.5" fill="#FF8000"/>
+      <path d="M15.5 8v6.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5V12h-.5v2.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5V8c0-.55.45-1 1-1s1 .45 1 1z" fill="white"/>
+      <path d="M9 7.5v2.5h-.5V7.5h-.5v2.5H7.5V7.5H7v3c0 .55.45 1 1 1h.25v3c0 .28.22.5.5.5s.5-.22.5-.5v-3H9.5c.55 0 1-.45 1-1v-3H9z" fill="white"/>
     </svg>
   );
 }
@@ -128,7 +128,7 @@ const PLATFORMS = [
     key: 'grubhub',
     name: 'Grubhub',
     description: 'Monitor Grubhub ratings and customer feedback for your delivery presence.',
-    bg: '#FFF0EE', border: '#FFBBB3',
+    bg: '#FFF4E6', border: '#FFD199',
     connectionType: 'url',
     urlLabel: 'Grubhub Restaurant URL',
     urlPlaceholder: 'https://www.grubhub.com/restaurant/your-restaurant',
