@@ -51,29 +51,70 @@ export default function Analytics() {
     document.head.appendChild(script);
   }, [data]);
 
-  function drawChart() {
+function drawChart() {
     if (!chartRef.current || !data?.trend?.length) return;
     if (chartInstance.current) chartInstance.current.destroy();
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
     const tickColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+
+    const hasPlatformTrend = data.platformTrend?.platforms?.length > 0;
+
+    const chartData = hasPlatformTrend
+      ? {
+          labels: data.platformTrend.labels,
+          datasets: data.platformTrend.platforms.map(p => ({
+            label: p.name,
+            data: p.data,
+            borderColor: p.color,
+            backgroundColor: p.color + '12',
+            tension: 0.4,
+            pointRadius: 3,
+            pointBackgroundColor: p.color,
+            borderWidth: 2,
+          })),
+        }
+      : {
+          labels: data.trend.map(t => t.month),
+          datasets: [{
+            label: 'Avg rating',
+            data: data.trend.map(t => parseFloat(t.avg_rating)),
+            borderColor: '#1D9E75',
+            backgroundColor: 'rgba(29,158,117,0.08)',
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#1D9E75',
+            borderWidth: 2,
+          }],
+        };
+
     chartInstance.current = new window.Chart(chartRef.current, {
       type: 'line',
-      data: {
-        labels: data.trend.map(t => t.month),
-        datasets: [{
-          label: 'Avg rating',
-          data: data.trend.map(t => parseFloat(t.avg_rating)),
-          borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)',
-          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#1D9E75', borderWidth: 2,
-        }],
-      },
+      data: chartData,
       options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: hasPlatformTrend,
+            position: 'bottom',
+            labels: {
+              color: tickColor,
+              font: { size: 11 },
+              boxWidth: 12,
+              padding: 16,
+            },
+          },
+          tooltip: { mode: 'index', intersect: false },
+        },
         scales: {
           x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
-          y: { min: 1, max: 5, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, stepSize: 1 } },
+          y: {
+            min: 3.0,
+            max: 5.0,
+            grid: { color: gridColor },
+            ticks: { color: tickColor, font: { size: 11 }, stepSize: 0.5 },
+          },
         },
       },
     });
