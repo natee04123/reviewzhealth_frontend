@@ -11,6 +11,8 @@ import Analytics    from './pages/Analytics.jsx';
 import Billing      from './pages/Billing.jsx';
 import { Spinner }  from './components/ui.jsx';
 import Integrations from './pages/Integrations.jsx';
+import Team from './pages/Team.jsx';
+import InviteAccept from './pages/InviteAccept.jsx';
 
 function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,6 +63,7 @@ export default function App() {
     <BrowserRouter>
       <TokenCapture onToken={checkAuth} />
       <Routes>
+        <Route path="/invite/:token" element={<InviteAccept />} />
         <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
         <Route path="/dashboard" element={
           user ? <AppShell user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />
@@ -72,6 +75,7 @@ export default function App() {
           <Route path="billing"       element={<Billing />} />
           <Route path="settings"      element={<Settings />} />
           <Route path="integrations" element={<Integrations />} />
+          <Route path="team" element={<Team />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
