@@ -209,8 +209,8 @@ function drawChart() {
         <div style={{ fontSize:15, fontWeight:500, color:'var(--ink)', marginBottom:16 }}>
           Rating trend
         </div>
-        {data.trend?.length > 0 ? (
-          <div style={{ height:180 }}>
+      {data.trend?.length > 0 ? (
+          <div style={{ height: data.platformTrend?.platforms?.length > 0 ? 220 : 180 }}>
             <canvas ref={chartRef} style={{ width:'100%', height:'100%' }}/>
           </div>
         ) : (
