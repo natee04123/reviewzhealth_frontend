@@ -56,13 +56,14 @@ export default function ReviewDetail() {
     }
   }
 
-  async function handleRegenerate() {
+async function handleRegenerate() {
     setRegenerating(true);
     try {
-      const { draftText } = await api.regenerate(id);
-      setEditedText(draftText);
-      setReview(r => ({ ...r, draft_text: draftText }));
-      showToast('Fresh draft generated', 'info');
+      const result = await api.regenerateReview(id);
+      const newText = result.draftText ?? result.draft_text ?? '';
+      setEditedText(newText);
+      setReview(r => ({ ...r, draft_text: newText }));
+      showToast('Fresh draft generated');
     } catch (e) {
       showToast(e.message, 'error');
     } finally {
