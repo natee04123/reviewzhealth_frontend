@@ -4,11 +4,12 @@ import { api } from '../lib/api.js';
 import { isDemoMode, enableDemoMode, disableDemoMode } from '../demo.js';
 
 const NAV = [
-  { to: '/dashboard',            icon: '◈', label: 'Reviews'   },
-  { to: '/dashboard/analytics',  icon: '◉', label: 'Health'    },
-  { to: '/dashboard/locations',  icon: '⊡', label: 'Locations' },
-  { to: '/dashboard/billing',    icon: '◎', label: 'Billing'   },
-  { to: '/dashboard/settings',   icon: '◌', label: 'Settings'  },
+  { to: '/dashboard',              icon: '◈', label: 'Reviews'      },
+  { to: '/dashboard/analytics',    icon: '◉', label: 'Health'       },
+  { to: '/dashboard/locations',    icon: '⊡', label: 'Locations'    },
+  { to: '/dashboard/billing',      icon: '◎', label: 'Billing'      },
+  { to: '/dashboard/integrations', icon: '⬡', label: 'Integrations' },
+  { to: '/dashboard/settings',     icon: '◌', label: 'Settings'     },
 ];
 
 export default function AppShell({ user }) {
