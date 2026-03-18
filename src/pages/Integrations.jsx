@@ -115,6 +115,17 @@ const PLATFORMS = [
     urlPlaceholder: 'https://www.doordash.com/store/your-restaurant',
     features: ['Rating monitoring', 'Copy & respond via DoorDash', 'Multi-location overview'],
   },
+  {
+    key: 'grubhub',
+    name: 'Grubhub',
+    description: 'Monitor Grubhub ratings and customer feedback for your delivery presence.',
+    slug: 'grubhub', color: '#F63440',
+    bg: '#FFF0EE', border: '#FFBBB3',
+    connectionType: 'url',
+    urlLabel: 'Grubhub Restaurant URL',
+    urlPlaceholder: 'https://www.grubhub.com/restaurant/your-restaurant',
+    features: ['Rating monitoring', 'Copy & respond via Grubhub', 'Delivery feedback tracking'],
+  },
 ];
 
 function ConnectModal({ platform, onSave, onClose }) {
