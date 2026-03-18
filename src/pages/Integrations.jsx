@@ -13,13 +13,27 @@ function GoogleLogo({ size = 24 }) {
   );
 }
 
+function OpenTableLogo({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="4" fill="#DA3743"/>
+      <circle cx="4.5" cy="13" r="2.2" fill="white"/>
+      <circle cx="14" cy="12" r="5.5" fill="white"/>
+      <circle cx="14" cy="12" r="2.8" fill="#DA3743"/>
+    </svg>
+  );
+}
+
 function GrubhubLogo({ size = 24 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2L3 9.5h1.5V19c0 .55.45 1 1 1h13c.55 0 1-.45 1-1V9.5H21L12 2z" fill="#FF8000"/>
-      <rect x="10.5" y="20" width="3" height="1.5" rx="0.5" fill="#FF8000"/>
-      <path d="M15.5 8v6.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5V12h-.5v2.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5V8c0-.55.45-1 1-1s1 .45 1 1z" fill="white"/>
-      <path d="M9 7.5v2.5h-.5V7.5h-.5v2.5H7.5V7.5H7v3c0 .55.45 1 1 1h.25v3c0 .28.22.5.5.5s.5-.22.5-.5v-3H9.5c.55 0 1-.45 1-1v-3H9z" fill="white"/>
+      <rect width="24" height="24" rx="4" fill="#FF8000"/>
+      <path d="M12 3.5L4.5 9.5H6V19.5H18V9.5H19.5L12 3.5Z" fill="white"/>
+      <path d="M10 9.5V13.5C10 14.05 10.45 14.5 11 14.5V18H13V14.5C13.55 14.5 14 14.05 14 13.5V9.5H10Z" fill="#FF8000"/>
+      <rect x="11" y="9.5" width="0.6" height="4" fill="white"/>
+      <rect x="12.4" y="9.5" width="0.6" height="4" fill="white"/>
+      <path d="M15.5 9.5V13C15.5 13.55 15.05 14 14.5 14V18H16V9.5H15.5Z" fill="#FF8000"/>
+      <rect x="15.5" y="9.5" width="0.5" height="4.5" fill="white"/>
     </svg>
   );
 }
@@ -116,7 +130,7 @@ const PLATFORMS = [
     urlPlaceholder: 'https://www.doordash.com/store/your-restaurant',
     features: ['Rating monitoring', 'Copy & respond via DoorDash', 'Multi-location overview'],
   },
- {
+  {
     key: 'grubhub',
     name: 'Grubhub',
     description: 'Monitor Grubhub ratings and customer feedback for your delivery presence.',
@@ -141,11 +155,14 @@ function ConnectModal({ platform, onSave, onClose }) {
   }
 
   return (
-    <div style={{
-      position:'fixed', inset:0, background:'rgba(0,0,0,0.4)',
-      display:'flex', alignItems:'center', justifyContent:'center',
-      zIndex:1000, padding:24,
-    }} onClick={e => e.target === e.currentTarget && onClose()}>
+    <div
+      onClick={e => e.target === e.currentTarget && onClose()}
+      style={{
+        position:'fixed', inset:0, background:'rgba(0,0,0,0.4)',
+        display:'flex', alignItems:'center', justifyContent:'center',
+        zIndex:1000, padding:24,
+      }}
+    >
       <div style={{
         background:'var(--bg-card)', borderRadius:'var(--radius-xl)',
         padding:'28px 32px', width:'100%', maxWidth:480,
@@ -192,7 +209,8 @@ function ConnectModal({ platform, onSave, onClose }) {
           autoFocus
           style={{
             width:'100%', padding:'10px 12px', fontSize:13,
-            borderRadius:'var(--radius-md)', marginBottom:error ? 6 : 16,
+            borderRadius:'var(--radius-md)',
+            marginBottom: error ? 6 : 16,
             border:`1px solid ${error ? 'var(--red-border)' : 'var(--border)'}`,
             background:'var(--bg)', color:'var(--ink)', outline:'none',
           }}
@@ -264,7 +282,7 @@ export default function Integrations() {
     return !!connections[platform.key];
   }
 
-  const connected = PLATFORMS.filter(p => isConnected(p));
+  const connected    = PLATFORMS.filter(p => isConnected(p));
   const notConnected = PLATFORMS.filter(p => !isConnected(p));
 
   return (
@@ -279,7 +297,6 @@ export default function Integrations() {
         </p>
       </div>
 
-      {/* Connected */}
       {connected.length > 0 && (
         <>
           <div style={{ fontSize:11, fontWeight:600, letterSpacing:'0.07em',
@@ -289,8 +306,7 @@ export default function Integrations() {
           <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:36 }}>
             {connected.map(platform => (
               <div key={platform.key} style={{
-                background:'var(--bg-card)',
-                border:'1px solid var(--green-border)',
+                background:'var(--bg-card)', border:'1px solid var(--green-border)',
                 borderRadius:'var(--radius-lg)', padding:'20px 24px',
                 boxShadow:'var(--shadow-sm)',
               }}>
@@ -369,7 +385,6 @@ export default function Integrations() {
         </>
       )}
 
-      {/* Not connected */}
       {notConnected.length > 0 && (
         <>
           <div style={{ fontSize:11, fontWeight:600, letterSpacing:'0.07em',
@@ -426,10 +441,7 @@ export default function Integrations() {
                     background:'var(--ink)', color:'var(--bg)',
                     border:'none', fontSize:13, fontWeight:500, cursor:'pointer',
                     display:'flex', alignItems:'center', justifyContent:'center', gap:7,
-                    transition:'opacity 0.15s',
                   }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                 >
                   <Logo platform={platform} size={14} />
                   Connect {platform.name}
