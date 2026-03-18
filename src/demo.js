@@ -404,6 +404,11 @@ export const DEMO_ANALYTICS = {
         color: '#FF3008',
         data: [3.8, 3.9, 3.9, 4.0, 4.0, 4.1],
       },
+      {
+        name: 'Grubhub',
+        color: '#FF8000',
+        data: [3.6, 3.7, 3.7, 3.8, 3.9, 3.9],
+      },
     ],
   },
   recentReviews: [],
