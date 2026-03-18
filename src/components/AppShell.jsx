@@ -7,6 +7,7 @@ const NAV = [
   { to: '/dashboard',              icon: '◈', label: 'Reviews'      },
   { to: '/dashboard/analytics',    icon: '◉', label: 'Health'       },
   { to: '/dashboard/locations',    icon: '⊡', label: 'Locations'    },
+  { to: '/dashboard/team',         icon: '◎', label: 'Team'         },
   { to: '/dashboard/billing',      icon: '◎', label: 'Billing'      },
   { to: '/dashboard/integrations', icon: '⬡', label: 'Integrations' },
   { to: '/dashboard/settings',     icon: '◌', label: 'Settings'     },
