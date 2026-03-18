@@ -10,18 +10,17 @@ function getToken() {
 }
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'x-auth-token': getToken() || '',
-      ...(options.headers || {}),
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  const { auth = true, ...fetchOptions } = options;
+  const headers = { ...fetchOptions.headers };
+  if (auth) {
+    const token = localStorage.getItem('rzh_token');
+    if (token) headers['x-auth-token'] = token;
+  }
+  const base = import.meta.env.VITE_API_BASE_URL ?? '';
+  const res = await fetch(`${base}${path}`, { ...fetchOptions, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || 'Request failed');
+    throw new Error(err.error ?? 'Request failed');
   }
   return res.json();
 }
@@ -37,6 +36,29 @@ export const api = {
     return request('/auth/logout', { method: 'POST' });
   },
 
+  getTeam: () => request('/api/team'),
+  
+  inviteTeamMember: (data) => request('/api/team/invite', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }),
+
+  getInvite: (token) => request(`/api/team/invite/${token}`, { auth: false }),
+
+  acceptInvite: (token) => request(`/api/team/invite/${token}/accept`, {
+    method: 'POST',
+    auth: false,
+  }),
+
+  updateTeamMember: (id, data) => request(`/api/team/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }),
+
+  removeTeamMember: (id) => request(`/api/team/${id}`, { method: 'DELETE' }),
+  
   // Locations
   getLocations: () => {
     if (isDemoMode()) return Promise.resolve(DEMO_LOCATIONS);
