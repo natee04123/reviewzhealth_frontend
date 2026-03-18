@@ -4,10 +4,10 @@ import { Spinner } from '../components/ui.jsx';
 
 function ScoreRing({ score }) {
   const radius = 54;
-  const circ = 2 * Math.PI * radius;
+  const circ   = 2 * Math.PI * radius;
   const offset = circ - (score / 100) * circ;
-  const color = score >= 80 ? '#1D9E75' : score >= 60 ? '#EF9F27' : '#E24B4A';
-  const label = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs work';
+  const color  = score >= 80 ? '#1D9E75' : score >= 60 ? '#EF9F27' : '#E24B4A';
+  const label  = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs work';
   return (
     <div style={{ position:'relative', width:128, height:128, flexShrink:0 }}>
       <svg width="128" height="128" viewBox="0 0 128 128" style={{ transform:'rotate(-90deg)' }}>
@@ -51,13 +51,12 @@ export default function Analytics() {
     document.head.appendChild(script);
   }, [data]);
 
-function drawChart() {
+  function drawChart() {
     if (!chartRef.current || !data?.trend?.length) return;
     if (chartInstance.current) chartInstance.current.destroy();
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark    = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-    const tickColor = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
-
+    const tickColor = isDark ? 'rgba(255,255,255,0.4)'  : 'rgba(0,0,0,0.4)';
     const hasPlatformTrend = data.platformTrend?.platforms?.length > 0;
 
     const chartData = hasPlatformTrend
@@ -98,20 +97,14 @@ function drawChart() {
           legend: {
             display: hasPlatformTrend,
             position: 'bottom',
-            labels: {
-              color: tickColor,
-              font: { size: 11 },
-              boxWidth: 12,
-              padding: 16,
-            },
+            labels: { color: tickColor, font: { size: 11 }, boxWidth: 12, padding: 16 },
           },
           tooltip: { mode: 'index', intersect: false },
         },
         scales: {
           x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
           y: {
-            min: 3.0,
-            max: 5.0,
+            min: 3.0, max: 5.0,
             grid: { color: gridColor },
             ticks: { color: tickColor, font: { size: 11 }, stepSize: 0.5 },
           },
@@ -137,6 +130,7 @@ function drawChart() {
           sentiment, distribution, pendingResponses } = data;
 
   const scoreLabel = healthScore >= 80 ? 'Excellent' : healthScore >= 60 ? 'Good' : 'Needs work';
+  const hasPlatformTrend = data.platformTrend?.platforms?.length > 0;
 
   const insights = [];
   if (avgRating >= 4.5) insights.push({ type:'good', text:`Your average rating is ${avgRating} ★ — that puts you in the top tier of businesses on reviewzhealth.` });
@@ -183,10 +177,10 @@ function drawChart() {
       {/* Stat strip */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {[
-          { label:'Avg rating',     value:`${avgRating} ★`, color:'#E8A020' },
-          { label:'Total reviews',  value:totalReviews,      color:'var(--ink)' },
-          { label:'Response rate',  value:`${responseRate}%`, color:responseRate >= 80 ? '#1D9E75' : '#EF9F27' },
-          { label:'Pending replies', value:pendingResponses, color:pendingResponses > 0 ? '#BA7517' : '#1D9E75' },
+          { label:'Avg rating',      value:`${avgRating} ★`, color:'#E8A020' },
+          { label:'Total reviews',   value:totalReviews,      color:'var(--ink)' },
+          { label:'Response rate',   value:`${responseRate}%`, color:responseRate >= 80 ? '#1D9E75' : '#EF9F27' },
+          { label:'Pending replies', value:pendingResponses,   color:pendingResponses > 0 ? '#BA7517' : '#1D9E75' },
         ].map(s => (
           <div key={s.label} style={{
             background:'var(--bg-card)', border:'1px solid var(--border)',
@@ -206,11 +200,16 @@ function drawChart() {
         borderRadius:'var(--radius-lg)', padding:'20px 24px', marginBottom:20,
         boxShadow:'var(--shadow-sm)',
       }}>
-        <div style={{ fontSize:15, fontWeight:500, color:'var(--ink)', marginBottom:16 }}>
-          Rating trend
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
+          <div style={{ fontSize:15, fontWeight:500, color:'var(--ink)' }}>Rating trend</div>
+          {hasPlatformTrend && (
+            <div style={{ fontSize:11, color:'var(--ink-3)' }}>
+              Facebook shown as star equivalent (% recommended ÷ 20)
+            </div>
+          )}
         </div>
-      {data.trend?.length > 0 ? (
-          <div style={{ height: data.platformTrend?.platforms?.length > 0 ? 220 : 180 }}>
+        {data.trend?.length > 0 ? (
+          <div style={{ height: hasPlatformTrend ? 240 : 180 }}>
             <canvas ref={chartRef} style={{ width:'100%', height:'100%' }}/>
           </div>
         ) : (
@@ -282,9 +281,9 @@ function drawChart() {
             borderRadius:'var(--radius-lg)', overflow:'hidden',
             marginBottom:20, boxShadow:'var(--shadow-sm)',
           }}>
-           {data.platformBreakdown.map((p, i) => (
+            {data.platformBreakdown.map((p, i) => (
               <div key={p.platform} style={{
-                display:'grid', gridTemplateColumns:'130px 1fr 90px 90px',
+                display:'grid', gridTemplateColumns:'140px 1fr 90px 90px',
                 alignItems:'center', gap:16, padding:'12px 20px',
                 borderBottom: i < data.platformBreakdown.length - 1
                   ? '1px solid var(--border)' : 'none',
@@ -294,39 +293,10 @@ function drawChart() {
                     {p.platform}
                   </div>
                   {p.note && (
-                    <div style={{ fontSize:10, color:'var(--ink-3)', marginTop:2 }}>
+                    <div style={{ fontSize:10, color:'var(--ink-3)', marginTop:2, lineHeight:1.4 }}>
                       {p.note}
                     </div>
                   )}
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                  <div style={{ flex:1, height:6, background:'var(--bg-muted)', borderRadius:99, overflow:'hidden' }}>
-                    <div style={{
-                      width:`${(p.avgRating / 5) * 100}%`, height:'100%', borderRadius:99,
-                      background: p.avgRating >= 4.5 ? '#3B6D11'
-                        : p.avgRating >= 4.0 ? '#639922'
-                        : p.avgRating >= 3.5 ? '#EF9F27' : '#E24B4A',
-                      transition:'width 1s ease',
-                    }}/>
-                  </div>
-                  <span style={{ fontSize:13, fontWeight:500, color:'var(--ink)', width:30, flexShrink:0 }}>
-                    {p.avgRating}★
-                  </span>
-                </div>
-                <div style={{ fontSize:12, color:'var(--ink-3)', textAlign:'right' }}>
-                  {p.reviewCount} reviews
-                </div>
-                <div style={{
-                  fontSize:12, textAlign:'right', fontWeight:500,
-                  color: p.responseRate >= 80 ? '#1D9E75'
-                    : p.responseRate >= 50 ? '#BA7517' : '#E24B4A',
-                }}>
-                  {p.responseRate}% replied
-                </div>
-              </div>
-            ))}
-                <div style={{ fontSize:13, fontWeight:500, color:'var(--ink)' }}>
-                  {p.platform}
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                   <div style={{ flex:1, height:6, background:'var(--bg-muted)', borderRadius:99, overflow:'hidden' }}>
@@ -368,7 +338,7 @@ function drawChart() {
           {insights.map((insight, i) => (
             <div key={i} style={{
               background: insight.type === 'good' ? 'var(--green-bg)' : 'var(--amber-bg)',
-              border: `1px solid ${insight.type === 'good' ? 'var(--green-border)' : 'var(--amber-border)'}`,
+              border:`1px solid ${insight.type === 'good' ? 'var(--green-border)' : 'var(--amber-border)'}`,
               borderRadius:'var(--radius-md)', padding:'12px 16px',
               display:'flex', gap:10, marginBottom:8,
             }}>
