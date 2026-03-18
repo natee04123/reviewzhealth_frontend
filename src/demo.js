@@ -1,23 +1,19 @@
-// Demo mode data — Mesa Group (fictional 5-location Southwestern restaurant group)
-
 export const DEMO_MODE_KEY = 'rzh_demo_mode';
 
 export function isDemoMode() {
   return localStorage.getItem(DEMO_MODE_KEY) === 'true';
 }
-
 export function enableDemoMode() {
   localStorage.setItem(DEMO_MODE_KEY, 'true');
 }
-
 export function disableDemoMode() {
   localStorage.removeItem(DEMO_MODE_KEY);
 }
 
 export const DEMO_USER = {
   id: 'demo',
-  name: 'Demo User',
-  email: 'demo@mesagrouputah.com',
+  name: 'Nathan Greenhalgh',
+  email: 'nathan@mesagrouputah.com',
   avatar_url: null,
   plan: 'growth',
 };
@@ -25,33 +21,33 @@ export const DEMO_USER = {
 export const DEMO_LOCATIONS = [
   {
     id: '1',
-    name: 'Mesa Group — Downtown',
+    name: 'Mesa Group — Downtown SLC',
     address: '242 S Main St, Salt Lake City, UT 84101',
     pubsub_registered: true,
-    avg_rating: 4.7,
-    total_reviews: 64,
-    pending_replies: 2,
-    response_rate: 92,
+    avg_rating: 4.6,
+    total_reviews: 91,
+    pending_replies: 4,
+    response_rate: 88,
   },
   {
     id: '2',
     name: 'Mesa Group — Provo',
     address: '1290 N University Ave, Provo, UT 84604',
     pubsub_registered: true,
-    avg_rating: 4.5,
-    total_reviews: 48,
-    pending_replies: 1,
-    response_rate: 88,
+    avg_rating: 4.4,
+    total_reviews: 73,
+    pending_replies: 2,
+    response_rate: 91,
   },
   {
     id: '3',
     name: 'Mesa Group — Sugarhouse',
     address: '2100 S 1100 E, Salt Lake City, UT 84106',
     pubsub_registered: true,
-    avg_rating: 4.4,
-    total_reviews: 37,
-    pending_replies: 3,
-    response_rate: 73,
+    avg_rating: 4.3,
+    total_reviews: 58,
+    pending_replies: 5,
+    response_rate: 76,
   },
   {
     id: '4',
@@ -76,18 +72,18 @@ export const DEMO_LOCATIONS = [
 ];
 
 export const DEMO_REVIEWS = [
+  // GOOGLE
   {
     id: 'r1',
     location_id: '1',
-    location_name: 'Mesa Group — Downtown',
+    location_name: 'Mesa Group — Downtown SLC',
     reviewer_name: 'Sarah M.',
     star_rating: 5,
-    review_text:
-      'Best green chile in Salt Lake City — and I have been searching for years. The carne adovada plate is massive and packed with flavor. Service was fast and friendly even on a busy Friday night. This place is the real deal. Already planning my next visit.',
+    source: 'google',
+    review_text: 'Best green chile in Salt Lake City — and I have been searching for years. The carne adovada plate is massive and packed with flavor. Service was fast and friendly even on a busy Friday night. This place is the real deal. Already planning my next visit.',
     review_time: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
     draft_status: 'pending',
-    draft_text:
-      "Thank you so much, Sarah! Finding the best green chile in SLC is serious business and we don't take that compliment lightly. Our team puts a lot of love into the carne adovada and it means everything to hear it shows. We can't wait to see you again soon — next time try the green chile smothered breakfast burrito! — The Mesa Group Downtown Team",
+    draft_text: "Thank you so much, Sarah! Finding the best green chile in SLC is serious business and we don't take that compliment lightly. Our team puts a lot of love into the carne adovada and it means everything to hear it shows. We can't wait to see you again soon — next time try the green chile smothered breakfast burrito! — The Mesa Group Downtown Team",
   },
   {
     id: 'r2',
@@ -95,12 +91,11 @@ export const DEMO_REVIEWS = [
     location_name: 'Mesa Group — Sugarhouse',
     reviewer_name: 'James T.',
     star_rating: 2,
-    review_text:
-      'Waited over 40 minutes for food on a Tuesday afternoon when the restaurant was maybe half full. The food was good once it arrived but nobody checked on us the entire time. Felt forgotten. Used to love this place but the service has really slipped lately.',
+    source: 'google',
+    review_text: 'Waited over 40 minutes for food on a Tuesday afternoon when the restaurant was maybe half full. The food was good once it arrived but nobody checked on us the entire time. Felt forgotten. Used to love this place but the service has really slipped lately.',
     review_time: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
     draft_status: 'pending',
-    draft_text:
-      "James, thank you for being honest with us — this is not the experience we want for any of our guests. A 40-minute wait with no check-ins on a quiet afternoon is simply not acceptable and we take full responsibility. We've shared your feedback directly with the Sugarhouse team. We'd love the chance to earn your trust back — please reach out to us at sugarhouse@mesagrouputah.com and we'll make your next visit right. — The Mesa Group Sugarhouse Team",
+    draft_text: "James, thank you for being honest with us — this is not the experience we want for any of our guests. A 40-minute wait with no check-ins on a quiet afternoon is simply not acceptable and we take full responsibility. We've shared your feedback directly with the Sugarhouse team. We'd love the chance to earn your trust back — please reach out to us at sugarhouse@mesagrouputah.com and we'll make your next visit right. — The Mesa Group Sugarhouse Team",
   },
   {
     id: 'r3',
@@ -108,82 +103,204 @@ export const DEMO_REVIEWS = [
     location_name: 'Mesa Group — Provo',
     reviewer_name: 'Emily R.',
     star_rating: 4,
-    review_text:
-      'Really solid Southwestern food and a great vibe. The green chile chicken enchiladas were excellent. Knocked off one star only because parking on University Ave is always a headache at lunch. Staff was attentive and the portions are very generous.',
+    source: 'google',
+    review_text: 'Really solid Southwestern food and a great vibe. The green chile chicken enchiladas were excellent. Knocked off one star only because parking on University Ave is always a headache at lunch. Staff was attentive and the portions are very generous.',
     review_time: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
     draft_status: 'pending',
-    draft_text:
-      "Thank you, Emily! We're so glad the enchiladas hit the spot — that green chile sauce is made fresh every morning and it really shows. You're absolutely right about University Ave parking and we hear that a lot from our lunch crowd. There is a free lot one block east on 500 N that most regulars use — hope that helps next time! See you soon. — The Mesa Group Provo Team",
+    draft_text: "Thank you Emily! We're so glad the enchiladas hit the spot — that green chile sauce is made fresh every morning and it really shows. You're absolutely right about University Ave parking and we hear that a lot from our lunch crowd. There is a free lot one block east on 500 N that most regulars use — hope that helps next time! See you soon. — The Mesa Group Provo Team",
   },
   {
     id: 'r4',
     location_id: '1',
-    location_name: 'Mesa Group — Downtown',
+    location_name: 'Mesa Group — Downtown SLC',
     reviewer_name: 'Mike D.',
     star_rating: 5,
-    review_text:
-      'Hands down the best breakfast burrito in Utah. I drive from Draper every Saturday morning just for this place. The staff knows my order by now and somehow it still tastes better every time. Never going anywhere else for breakfast.',
+    source: 'google',
+    review_text: 'Hands down the best breakfast burrito in Utah. I drive from Draper every Saturday morning just for this place. The staff knows my order by now and somehow it still tastes better every time. Never going anywhere else for breakfast.',
     review_time: new Date(Date.now() - 1000 * 60 * 60 * 32).toISOString(),
     draft_status: 'posted',
-    draft_text:
-      "Mike, driving from Draper every Saturday is the ultimate compliment and it honestly makes our whole team smile. We love having you as a regular and we will make sure it is always worth the drive. See you this Saturday! — The Mesa Group Downtown Team",
+    draft_text: "Mike, driving from Draper every Saturday is the ultimate compliment and it honestly makes our whole team smile. We love having you as a regular and we will make sure it is always worth the drive. See you this Saturday! — The Mesa Group Downtown Team",
   },
+
+  // YELP
   {
     id: 'r5',
-    location_id: '3',
-    location_name: 'Mesa Group — Sugarhouse',
-    reviewer_name: 'Rachel P.',
-    star_rating: 1,
-    review_text:
-      'Ordered takeout and got home to find my order was completely wrong. Called the restaurant three times and nobody picked up. This is the second time this has happened. Really disappointing because the food is great when they get it right.',
-    review_time: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
+    location_id: '1',
+    location_name: 'Mesa Group — Downtown SLC',
+    reviewer_name: 'Jessica L.',
+    star_rating: 5,
+    source: 'yelp',
+    review_text: 'I have been to a lot of New Mexican restaurants and this one holds its own. The posole is incredible — rich, deeply flavored broth with perfectly tender pork. The chips and salsa they bring out while you wait are dangerous because I could eat three baskets. Service was warm and knowledgeable. Will definitely be back.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
     draft_status: 'pending',
-    draft_text:
-      "Rachel, we are so sorry — a wrong order is frustrating on its own, but not being able to reach us to fix it is completely unacceptable. We are looking into the phone issue at our Sugarhouse location immediately. Please email us at sugarhouse@mesagrouputah.com with your order details and we will make this right with a full refund and a meal on us. You deserve better than this and we appreciate you giving us the chance to fix it. — The Mesa Group Team",
+    draft_text: "Jessica, thank you so much! The posole is one of our most labored-over dishes — our kitchen team will be thrilled to hear this. And yes, those chips and salsa are dangerously good — you are not the first person to warn others! We look forward to having you back soon. — The Mesa Group Downtown Team",
   },
   {
     id: 'r6',
     location_id: '2',
     location_name: 'Mesa Group — Provo',
-    reviewer_name: 'Tyler B.',
+    reviewer_name: 'Brandon K.',
+    star_rating: 3,
+    source: 'yelp',
+    review_text: 'Food is consistently good but the wait times are unpredictable. Came twice this month — first time was perfect, second time waited 35 minutes for a simple order during a slow period. Would give 4 stars if the kitchen were more consistent.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Brandon, thank you for giving us a second chance and for the honest feedback. You are right that consistency matters and a 35-minute wait on a slow day is not the standard we hold ourselves to. We are actively working on our kitchen timing systems and your feedback goes directly to our management team. We hope you will come back and let us earn that fourth star. — The Mesa Group Provo Team",
+  },
+  {
+    id: 'r7',
+    location_id: '3',
+    location_name: 'Mesa Group — Sugarhouse',
+    reviewer_name: 'Amanda W.',
+    star_rating: 1,
+    source: 'yelp',
+    review_text: 'Ordered takeout and got home to find my order was completely wrong. Called the restaurant three times and nobody picked up. This is the second time this has happened at this location. Really disappointing because the food is great when they get it right.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Amanda, we are so sorry — a wrong order is frustrating on its own, but not being able to reach us to fix it is completely unacceptable. We are looking into the phone issue at our Sugarhouse location immediately. Please email us at sugarhouse@mesagrouputah.com with your order details and we will make this right with a full refund and a meal on us. You deserve better than this and we appreciate you giving us the chance to fix it. — The Mesa Group Team",
+  },
+
+  // TRIPADVISOR
+  {
+    id: 'r8',
+    location_id: '1',
+    location_name: 'Mesa Group — Downtown SLC',
+    reviewer_name: 'TravellerFromDenver',
     star_rating: 5,
-    review_text:
-      'Brought my whole family here for my dad\'s birthday and it was perfect. The staff brought out chips and salsa while we waited and even remembered to wish my dad happy birthday without being prompted. Food was incredible. The green chile stew is a must-order.',
-    review_time: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-    draft_status: 'approved',
-    draft_text:
-      "Tyler, happy birthday to your dad from all of us at Mesa Group! Moments like this are exactly why we do what we do. Thank you for choosing us for such a special occasion — your family made our team's day. We hope to be part of many more celebrations. — The Mesa Group Provo Team",
+    source: 'tripadvisor',
+    review_text: 'We were visiting Salt Lake City for a conference and stumbled on Mesa Group on our last night. What a find. The red chile pork was one of the best things I have eaten on a work trip in years. Atmosphere is warm and welcoming. Our server Camila was outstanding. Already recommended to three colleagues who will be visiting next month.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 14).toISOString(),
+    draft_status: 'pending',
+    draft_text: "What a wonderful note to end your Salt Lake City trip on — thank you! Red chile pork is one of our signature dishes and we are so glad it left an impression. Camila will be delighted to hear the shoutout. We hope your colleagues find us when they visit and we look forward to welcoming you back next time you are in town! — The Mesa Group Downtown Team",
+  },
+  {
+    id: 'r9',
+    location_id: '2',
+    location_name: 'Mesa Group — Provo',
+    reviewer_name: 'FoodieMom_Utah',
+    star_rating: 4,
+    source: 'tripadvisor',
+    review_text: 'Took my family of five here for a Saturday lunch. Kids loved the quesadillas and my husband and I split the green chile cheeseburger which was surprisingly amazing. The only reason I am not giving 5 stars is the noise level — it got quite loud and hard to have a conversation. Still a great meal overall.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 60).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Thank you for bringing the whole family in! We love hearing that the kids were happy and that the green chile cheeseburger won you over — it surprises a lot of people! Your feedback about the noise level is genuinely helpful and something we are looking at solutions for. We hope to have you all back soon for a slightly quieter experience! — The Mesa Group Provo Team",
+  },
+
+  // OPENTABLE
+  {
+    id: 'r10',
+    location_id: '1',
+    location_name: 'Mesa Group — Downtown SLC',
+    reviewer_name: 'David R.',
+    star_rating: 5,
+    source: 'opentable',
+    review_text: 'Booked for my wife\'s birthday dinner and everything was perfect. The staff knew it was a special occasion without being over the top about it. Food was exceptional — the mole enchiladas were complex and deeply satisfying. Wine pairing suggestion from our server was spot on. One of the best dinners we have had in Salt Lake.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
+    draft_status: 'pending',
+    draft_text: "David, happy birthday to your wife from all of us! Creating the right atmosphere for a special occasion — present but not over the top — is something our team takes seriously, so this means a lot. We are thrilled the mole enchiladas delivered and that our server's wine suggestion landed well. We hope this becomes your go-to celebration spot. — The Mesa Group Downtown Team",
+  },
+  {
+    id: 'r11',
+    location_id: '3',
+    location_name: 'Mesa Group — Sugarhouse',
+    reviewer_name: 'Rachel S.',
+    star_rating: 3,
+    source: 'opentable',
+    review_text: 'Had a reservation for 7pm and was not seated until 7:25. The food was good once we got it but the delay put us behind for a show we had tickets for. The host apologized but it would have been nice if someone had flagged the delay proactively so we could have planned accordingly.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 42).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Rachel, we sincerely apologize for the delay on your reservation. A 25-minute wait past your booking time is not acceptable and the fact that nobody proactively communicated with you about it made it worse. You were right to flag this and we have shared your feedback with our front-of-house team directly. We hope you will give us another chance — next time will be different. — The Mesa Group Sugarhouse Team",
+  },
+
+  // UBER EATS
+  {
+    id: 'r12',
+    location_id: '2',
+    location_name: 'Mesa Group — Provo',
+    reviewer_name: 'hungry_in_provo',
+    star_rating: 4,
+    source: 'ubereats',
+    review_text: 'Green chile burrito arrived hot and well packaged. Portions are generous for the price. Took off one star because the guacamole was missing from my order but everything else was great. Will order again.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 10).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Thank you for the order and for letting us know about the missing guacamole — we are sorry about that! We have flagged this with our packaging team to make sure every item gets checked before it goes out. We appreciate your patience and hope to make it up to you on your next order. — The Mesa Group Provo Team",
+  },
+  {
+    id: 'r13',
+    location_id: '1',
+    location_name: 'Mesa Group — Downtown SLC',
+    reviewer_name: 'SLCFoodie22',
+    star_rating: 2,
+    source: 'ubereats',
+    review_text: 'Food was cold by the time it arrived and the chips were completely soggy. I know delivery has its limitations but this was pretty bad. The food itself tasted good so I will try picking it up in person next time.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
+    draft_status: 'pending',
+    draft_text: "We are really sorry about the cold food and soggy chips — that is not the experience we want you to have. Delivery timing and packaging for items like chips is something we are constantly working to improve. Your suggestion to try us in person is a great one and we think you will notice the difference. Hope to see you in the restaurant soon! — The Mesa Group Downtown Team",
+  },
+
+  // DOORDASH
+  {
+    id: 'r14',
+    location_id: '3',
+    location_name: 'Mesa Group — Sugarhouse',
+    reviewer_name: 'Maria G.',
+    star_rating: 5,
+    source: 'doordash',
+    review_text: 'This place never disappoints on delivery. The tamales travel surprisingly well and always arrive at the right temperature. I have ordered from here at least a dozen times and have never had a bad experience. Fast delivery too.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
+    draft_status: 'pending',
+    draft_text: "Maria, a dozen orders and never a bad experience — you just made our whole team's day! We put extra care into our tamale packaging specifically because we know delivery is tough on certain dishes. Thank you for your loyalty and for taking the time to share this. — The Mesa Group Sugarhouse Team",
+  },
+  {
+    id: 'r15',
+    location_id: '2',
+    location_name: 'Mesa Group — Provo',
+    reviewer_name: 'ProvoHungry',
+    star_rating: 3,
+    source: 'doordash',
+    review_text: 'Order took over an hour to arrive even though the restaurant is 10 minutes away. Not sure if this is a DoorDash issue or a restaurant issue but the food was lukewarm. The flavors were still good though.',
+    review_time: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+    draft_status: 'pending',
+    draft_text: "We are sorry the wait was so long and that the food arrived lukewarm — that is frustrating and you deserved better. Delivery timing is partly outside our control once it leaves our kitchen but we are working with our delivery partners to improve pickup times. The good news is our food is always freshest in person if you ever want to come in! — The Mesa Group Provo Team",
   },
 ];
 
 export const DEMO_ANALYTICS = {
   healthScore: 84,
-  avgRating: 4.5,
-  totalReviews: 149,
-  totalResponded: 118,
-  pendingResponses: 6,
-  responseRate: 85,
+  avgRating: 4.4,
+  totalReviews: 222,
+  totalResponded: 178,
+  pendingResponses: 11,
+  responseRate: 80,
   sentiment: {
-    positive: 74,
-    neutral: 16,
-    negative: 10,
+    positive: 71,
+    neutral: 18,
+    negative: 11,
   },
   distribution: [
-    { star: 5, count: 82, pct: 55 },
-    { star: 4, count: 34, pct: 23 },
-    { star: 3, count: 18, pct: 12 },
-    { star: 2, count: 9,  pct: 6  },
-    { star: 1, count: 6,  pct: 4  },
+    { star: 5, count: 118, pct: 53 },
+    { star: 4, count: 58,  pct: 26 },
+    { star: 3, count: 28,  pct: 13 },
+    { star: 2, count: 12,  pct: 5  },
+    { star: 1, count: 6,   pct: 3  },
   ],
   trend: [
-    { month: 'Oct', avg_rating: '4.0', review_count: 14 },
-    { month: 'Nov', avg_rating: '4.1', review_count: 19 },
-    { month: 'Dec', avg_rating: '4.2', review_count: 22 },
-    { month: 'Jan', avg_rating: '4.3', review_count: 28 },
-    { month: 'Feb', avg_rating: '4.4', review_count: 32 },
-    { month: 'Mar', avg_rating: '4.5', review_count: 34 },
+    { month: 'Oct', avg_rating: '4.0', review_count: 24 },
+    { month: 'Nov', avg_rating: '4.1', review_count: 31 },
+    { month: 'Dec', avg_rating: '4.2', review_count: 28 },
+    { month: 'Jan', avg_rating: '4.3', review_count: 38 },
+    { month: 'Feb', avg_rating: '4.4', review_count: 44 },
+    { month: 'Mar', avg_rating: '4.4', review_count: 57 },
   ],
   recentReviews: [],
+  platformBreakdown: [
+    { platform: 'Google',      avgRating: 4.6, reviewCount: 89,  responseRate: 91 },
+    { platform: 'Yelp',        avgRating: 4.2, reviewCount: 48,  responseRate: 75 },
+    { platform: 'Tripadvisor', avgRating: 4.5, reviewCount: 31,  responseRate: 68 },
+    { platform: 'OpenTable',   avgRating: 4.3, reviewCount: 28,  responseRate: 82 },
+    { platform: 'Uber Eats',   avgRating: 3.9, reviewCount: 16,  responseRate: 44 },
+    { platform: 'DoorDash',    avgRating: 4.0, reviewCount: 10,  responseRate: 50 },
+  ],
 };
 
 export const DEMO_BILLING = {
