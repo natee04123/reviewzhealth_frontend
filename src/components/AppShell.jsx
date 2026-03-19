@@ -21,11 +21,18 @@ export default function AppShell({ user }) {
   const role = demo ? 'owner' : (user?.member_role ?? user?.role ?? 'owner');
   const visibleNav = NAV.filter(item => item.roles.includes(role));
 
-  async function handleLogout() {
+ async function handleLogout() {
     setLoggingOut(true);
-    if (demo) { disableDemoMode(); navigate('/'); return; }
-    await api.logout().catch(() => {});
-    navigate('/');
+    if (demo) {
+      disableDemoMode();
+      navigate('/');
+      return;
+    }
+    try {
+      await api.logout();
+    } catch {}
+    localStorage.removeItem('rzh_token');
+    window.location.href = '/';
   }
 
   function toggleDemo() {
