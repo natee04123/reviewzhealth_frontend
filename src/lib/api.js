@@ -38,11 +38,45 @@ export const api = {
 
   getTeam: () => request('/api/team'),
   
-  inviteTeamMember: (data) => request('/api/team/invite', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  }),
+inviteTeamMember: (data) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request('/api/team/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+
+  getTeam: () => {
+    if (isDemoMode()) return Promise.resolve([
+      { id: 1, email: 'manager@mesagroup.com', name: 'Jordan Lee', role: 'manager', user_id: 1, location_ids: ['1', '2'] },
+      { id: 2, email: 'carlos@mesagroup.com',  name: 'Carlos Vega', role: 'manager', user_id: 2, location_ids: ['3'] },
+    ]);
+    return request('/api/team');
+  },
+
+  inviteTeamMember: (data) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request('/api/team/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateTeamMember: (id, data) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/team/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+
+  removeTeamMember: (id) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/team/${id}`, { method: 'DELETE' });
+  },
 
   getInvite: (token) => request(`/api/team/invite/${token}`, { auth: false }),
 
