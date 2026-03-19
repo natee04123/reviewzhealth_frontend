@@ -4,19 +4,22 @@ import { api } from '../lib/api.js';
 import { isDemoMode, enableDemoMode, disableDemoMode } from '../demo.js';
 
 const NAV = [
-  { to: '/dashboard',              icon: '◈', label: 'Reviews'      },
-  { to: '/dashboard/analytics',    icon: '◉', label: 'Health'       },
-  { to: '/dashboard/locations',    icon: '⊡', label: 'Locations'    },
-  { to: '/dashboard/team',         icon: '◎', label: 'Team'         },
-  { to: '/dashboard/billing',      icon: '◎', label: 'Billing'      },
-  { to: '/dashboard/integrations', icon: '⬡', label: 'Integrations' },
-  { to: '/dashboard/settings',     icon: '◌', label: 'Settings'     },
+  { to: '/dashboard',              icon: '◈', label: 'Reviews',      roles: ['owner', 'manager'] },
+  { to: '/dashboard/analytics',    icon: '◉', label: 'Health',       roles: ['owner', 'manager'] },
+  { to: '/dashboard/locations',    icon: '⊡', label: 'Locations',    roles: ['owner', 'manager'] },
+  { to: '/dashboard/team',         icon: '◎', label: 'Team',         roles: ['owner'] },
+  { to: '/dashboard/billing',      icon: '◎', label: 'Billing',      roles: ['owner'] },
+  { to: '/dashboard/integrations', icon: '⬡', label: 'Integrations', roles: ['owner'] },
+  { to: '/dashboard/settings',     icon: '◌', label: 'Settings',     roles: ['owner'] },
 ];
 
 export default function AppShell({ user }) {
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
   const demo = isDemoMode();
+
+  const role = demo ? 'owner' : (user?.member_role ?? user?.role ?? 'owner');
+  const visibleNav = NAV.filter(item => item.roles.includes(role));
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -35,101 +38,114 @@ export default function AppShell({ user }) {
     : user;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
+    <div style={{ display:'flex', minHeight:'100vh', background:'var(--bg)' }}>
 
       {/* Sidebar */}
       <aside style={{
-        width: 224, background: 'var(--ink)', color: '#F7F5F0',
-        display: 'flex', flexDirection: 'column', flexShrink: 0,
-        position: 'sticky', top: 0, height: '100vh',
-        borderRight: '1px solid rgba(247,245,240,0.06)',
+        width:224, background:'var(--ink)', color:'#F7F5F0',
+        display:'flex', flexDirection:'column', flexShrink:0,
+        position:'sticky', top:0, height:'100vh',
+        borderRight:'1px solid rgba(247,245,240,0.06)',
       }}>
 
         {/* Wordmark */}
-        <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid rgba(247,245,240,0.06)' }}>
+        <div style={{ padding:'28px 20px 20px', borderBottom:'1px solid rgba(247,245,240,0.06)' }}>
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 21,
-            color: '#F7F5EF', lineHeight: 1.15, letterSpacing: '-0.01em',
+            fontFamily:'var(--font-display)', fontSize:21,
+            color:'#F7F5EF', lineHeight:1.15, letterSpacing:'-0.01em',
           }}>
-            reviewz<span style={{ color: '#1D9E75' }}>health</span>
+            reviewz<span style={{ color:'#1D9E75' }}>health</span>
           </div>
           {demo && (
             <div style={{
-              marginTop: 6, display: 'inline-flex', alignItems: 'center', gap: 5,
-              padding: '2px 8px', borderRadius: 99,
-              background: 'rgba(29,158,117,0.15)', border: '1px solid rgba(29,158,117,0.3)',
-              fontSize: 10, fontWeight: 600, color: '#1D9E75', letterSpacing: '0.05em',
+              marginTop:6, display:'inline-flex', alignItems:'center', gap:5,
+              padding:'2px 8px', borderRadius:99,
+              background:'rgba(29,158,117,0.15)', border:'1px solid rgba(29,158,117,0.3)',
+              fontSize:10, fontWeight:600, color:'#1D9E75', letterSpacing:'0.05em',
             }}>
               ◉ DEMO
+            </div>
+          )}
+          {!demo && role === 'manager' && (
+            <div style={{
+              marginTop:6, display:'inline-flex', alignItems:'center', gap:5,
+              padding:'2px 8px', borderRadius:99,
+              background:'rgba(247,245,240,0.08)', border:'1px solid rgba(247,245,240,0.12)',
+              fontSize:10, fontWeight:600, color:'rgba(247,245,240,0.45)',
+              letterSpacing:'0.05em',
+            }}>
+              MANAGER
             </div>
           )}
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: '10px 10px', overflowY: 'auto' }}>
-          {NAV.map(({ to, icon, label }) => (
+        <nav style={{ flex:1, padding:'10px 10px', overflowY:'auto' }}>
+          {visibleNav.map(({ to, icon, label }) => (
             <NavLink key={to} to={to} end={to === '/dashboard'}
               style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '9px 12px', borderRadius: 'var(--radius-md)',
-                fontSize: 13, fontWeight: isActive ? 500 : 400,
+                display:'flex', alignItems:'center', gap:10,
+                padding:'9px 12px', borderRadius:'var(--radius-md)',
+                fontSize:13, fontWeight: isActive ? 500 : 400,
                 color: isActive ? '#F7F5EF' : 'rgba(247,245,240,0.45)',
                 background: isActive ? 'rgba(247,245,240,0.09)' : 'transparent',
-                marginBottom: 1, transition: 'all 0.12s', textDecoration: 'none',
+                marginBottom:1, transition:'all 0.12s', textDecoration:'none',
               })}>
-              <span style={{ fontSize: 15, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+              <span style={{ fontSize:15, lineHeight:1, flexShrink:0 }}>{icon}</span>
               {label}
             </NavLink>
           ))}
         </nav>
 
-        {/* Demo toggle */}
-        <div style={{ padding: '10px 10px 0' }}>
-          <button onClick={toggleDemo} style={{
-            width: '100%', padding: '8px 12px', borderRadius: 'var(--radius-md)',
-            fontSize: 12, fontWeight: 500, cursor: 'pointer', textAlign: 'left',
-            display: 'flex', alignItems: 'center', gap: 8,
-            border: `1px solid ${demo ? 'rgba(29,158,117,0.4)' : 'rgba(247,245,240,0.1)'}`,
-            background: demo ? 'rgba(29,158,117,0.12)' : 'transparent',
-            color: demo ? '#1D9E75' : 'rgba(247,245,240,0.35)',
-            transition: 'all 0.15s',
-          }}>
-            <span style={{ fontSize: 13 }}>{demo ? '◉' : '◎'}</span>
-            {demo ? 'Exit demo mode' : 'Demo mode'}
-          </button>
-        </div>
+        {/* Demo toggle — owner only */}
+        {role === 'owner' && (
+          <div style={{ padding:'10px 10px 0' }}>
+            <button onClick={toggleDemo} style={{
+              width:'100%', padding:'8px 12px', borderRadius:'var(--radius-md)',
+              fontSize:12, fontWeight:500, cursor:'pointer', textAlign:'left',
+              display:'flex', alignItems:'center', gap:8,
+              border:`1px solid ${demo ? 'rgba(29,158,117,0.4)' : 'rgba(247,245,240,0.1)'}`,
+              background: demo ? 'rgba(29,158,117,0.12)' : 'transparent',
+              color: demo ? '#1D9E75' : 'rgba(247,245,240,0.35)',
+              transition:'all 0.15s',
+            }}>
+              <span style={{ fontSize:13 }}>{demo ? '◉' : '◎'}</span>
+              {demo ? 'Exit demo mode' : 'Demo mode'}
+            </button>
+          </div>
+        )}
 
         {/* User + logout */}
-        <div style={{ padding: '12px 10px 20px', marginTop: 6 }}>
+        <div style={{ padding:'12px 10px 20px', marginTop:6 }}>
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: '10px 12px', borderRadius: 'var(--radius-md)',
-            background: 'rgba(247,245,240,0.05)',
-            marginBottom: 6,
+            display:'flex', alignItems:'center', gap:10,
+            padding:'10px 12px', borderRadius:'var(--radius-md)',
+            background:'rgba(247,245,240,0.05)',
+            marginBottom:6,
           }}>
             {!demo && user?.avatar_url
               ? <img src={user.avatar_url} alt="" width={30} height={30}
-                  style={{ borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  style={{ borderRadius:'50%', objectFit:'cover', flexShrink:0 }}/>
               : <div style={{
-                  width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
+                  width:30, height:30, borderRadius:'50%', flexShrink:0,
                   background: demo ? 'rgba(29,158,117,0.3)' : 'rgba(247,245,240,0.12)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, fontWeight: 600,
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize:12, fontWeight:600,
                   color: demo ? '#1D9E75' : '#F7F5EF',
                 }}>
                   {(displayUser?.name ?? 'U')[0].toUpperCase()}
                 </div>
             }
-            <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ minWidth:0, flex:1 }}>
               <div style={{
-                fontSize: 12, fontWeight: 500, color: '#F7F5EF',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                fontSize:12, fontWeight:500, color:'#F7F5EF',
+                overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
               }}>
                 {displayUser?.name ?? 'Owner'}
               </div>
               <div style={{
-                fontSize: 11, color: 'rgba(247,245,240,0.35)',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                fontSize:11, color:'rgba(247,245,240,0.35)',
+                overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
               }}>
                 {displayUser?.email}
               </div>
@@ -137,11 +153,11 @@ export default function AppShell({ user }) {
           </div>
 
           <button onClick={handleLogout} disabled={loggingOut} style={{
-            width: '100%', padding: '7px 12px', borderRadius: 'var(--radius-md)',
-            fontSize: 12, color: 'rgba(247,245,240,0.35)',
-            border: '1px solid rgba(247,245,240,0.08)',
-            background: 'transparent', cursor: 'pointer',
-            transition: 'all 0.15s', textAlign: 'center',
+            width:'100%', padding:'7px 12px', borderRadius:'var(--radius-md)',
+            fontSize:12, color:'rgba(247,245,240,0.35)',
+            border:'1px solid rgba(247,245,240,0.08)',
+            background:'transparent', cursor:'pointer',
+            transition:'all 0.15s', textAlign:'center',
           }}>
             {loggingOut ? 'Signing out…' : 'Sign out'}
           </button>
@@ -150,24 +166,24 @@ export default function AppShell({ user }) {
 
       {/* Main content */}
       <main style={{
-        flex: 1, minWidth: 0,
-        display: 'flex', flexDirection: 'column',
-        background: 'var(--bg)',
+        flex:1, minWidth:0,
+        display:'flex', flexDirection:'column',
+        background:'var(--bg)',
       }}>
         {demo && (
           <div style={{
-            background: 'rgba(29,158,117,0.08)',
-            borderBottom: '1px solid rgba(29,158,117,0.2)',
-            padding: '8px 24px',
-            display: 'flex', alignItems: 'center', gap: 8,
-            fontSize: 12, color: '#1D9E75', fontWeight: 500,
+            background:'rgba(29,158,117,0.08)',
+            borderBottom:'1px solid rgba(29,158,117,0.2)',
+            padding:'8px 24px',
+            display:'flex', alignItems:'center', gap:8,
+            fontSize:12, color:'#1D9E75', fontWeight:500,
           }}>
             <span>◉</span>
             Demo mode active — showing Mesa Group sample data. This is not real customer data.
             <button onClick={toggleDemo} style={{
-              marginLeft: 'auto', fontSize: 11, color: '#1D9E75',
-              background: 'none', border: 'none', cursor: 'pointer',
-              textDecoration: 'underline', fontWeight: 500,
+              marginLeft:'auto', fontSize:11, color:'#1D9E75',
+              background:'none', border:'none', cursor:'pointer',
+              textDecoration:'underline', fontWeight:500,
             }}>
               Exit demo
             </button>
