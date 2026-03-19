@@ -35,7 +35,7 @@ export default function App() {
   async function checkAuth() {
     try {
       const data = await api.getMe();
-      setUser(data.user ?? data ?? null);
+setUser(data?.user ?? null);
     } catch {
       setUser(null);
     } finally {
