@@ -27,8 +27,8 @@ async function request(path, options = {}) {
 
 export const api = {
 // Auth
-  getMe: () => {
-    if (isDemoMode()) return Promise.resolve(DEMO_USER);
+getMe: () => {
+    if (isDemoMode()) return Promise.resolve({ user: DEMO_USER });
     return request('/auth/me');
   },
   logout: () => {
