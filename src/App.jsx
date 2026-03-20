@@ -11,7 +11,7 @@ import Analytics    from './pages/Analytics.jsx';
 import Billing      from './pages/Billing.jsx';
 import { Spinner }  from './components/ui.jsx';
 import Integrations from './pages/Integrations.jsx';
-import Team from './pages/Team.jsx';
+import Team         from './pages/Team.jsx';
 import InviteAccept from './pages/InviteAccept.jsx';
 
 function TokenCapture({ onToken }) {
@@ -32,37 +32,29 @@ export default function App() {
   const [user, setUser]         = useState(undefined);
   const [checking, setChecking] = useState(true);
 
-async function checkAuth() {
-    let retries = 3;
-    while (retries > 0) {
-      try {
-        const data = await api.getMe();
-        setUser(data?.user ?? null);
-        setChecking(false);
-        return;
-      } catch {
-        retries--;
-        if (retries > 0) {
-          await new Promise(r => setTimeout(r, 1000));
-        }
-      }
+  async function checkAuth() {
+    try {
+      const data = await api.getMe();
+      setUser(data?.user ?? null);
+    } catch {
+      setUser(null);
+    } finally {
+      setChecking(false);
     }
-    setUser(null);
-    setChecking(false);
   }
-  
-https://reviewzhealthbackend-production.up.railway.app/auth/google
+
   useEffect(() => { checkAuth(); }, []);
 
   async function handleLogout() {
     await api.logout().catch(() => {});
     localStorage.removeItem('rzh_token');
     setUser(null);
+    window.location.href = '/';
   }
 
   if (checking) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh' }}>
         <Spinner size={32} />
       </div>
     );
@@ -77,14 +69,14 @@ https://reviewzhealthbackend-production.up.railway.app/auth/google
         <Route path="/dashboard" element={
           user ? <AppShell user={user} onLogout={handleLogout} /> : <Navigate to="/" replace />
         }>
-          <Route index                element={<Dashboard />} />
-          <Route path="reviews/:id"   element={<ReviewDetail />} />
-          <Route path="locations"     element={<Locations />} />
-          <Route path="analytics"     element={<Analytics />} />
-          <Route path="billing"       element={<Billing />} />
-          <Route path="settings"      element={<Settings />} />
+          <Route index              element={<Dashboard />} />
+          <Route path="reviews/:id" element={<ReviewDetail />} />
+          <Route path="locations"   element={<Locations />} />
+          <Route path="analytics"   element={<Analytics />} />
+          <Route path="billing"     element={<Billing />} />
+          <Route path="settings"    element={<Settings />} />
           <Route path="integrations" element={<Integrations />} />
-          <Route path="team" element={<Team />} />
+          <Route path="team"        element={<Team />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
