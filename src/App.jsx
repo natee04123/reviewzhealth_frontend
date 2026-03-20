@@ -32,17 +32,27 @@ export default function App() {
   const [user, setUser]         = useState(undefined);
   const [checking, setChecking] = useState(true);
 
-  async function checkAuth() {
+ async function checkAuth(retries = 3) {
     try {
       const data = await api.getMe();
-setUser(data?.user ?? null);
+      setUser(data?.user ?? null);
     } catch {
+      if (retries > 0) {
+        await new Promise(r => setTimeout(r, 1000));
+        return checkAuth(retries - 1);
+      }
       setUser(null);
     } finally {
       setChecking(false);
     }
   }
+```
 
+But actually the real fix is simpler — Railway is doing rolling deploys every time you commit. You're not actively deploying right now so the container should be stable. 
+
+Try going to the OAuth URL again right now:
+```
+https://reviewzhealthbackend-production.up.railway.app/auth/google
   useEffect(() => { checkAuth(); }, []);
 
   async function handleLogout() {
