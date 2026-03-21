@@ -13,6 +13,7 @@ import { Spinner }  from './components/ui.jsx';
 import Integrations from './pages/Integrations.jsx';
 import Team         from './pages/Team.jsx';
 import InviteAccept from './pages/InviteAccept.jsx';
+import Goals from './pages/Goals.jsx';
 
 function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="settings"    element={<Settings />} />
           <Route path="integrations" element={<Integrations />} />
           <Route path="team"        element={<Team />} />
+          <Route path="goals" element={<Goals />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
