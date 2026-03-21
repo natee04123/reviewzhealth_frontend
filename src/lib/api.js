@@ -1,6 +1,6 @@
 import {
   isDemoMode, DEMO_USER, DEMO_LOCATIONS,
-  DEMO_REVIEWS, DEMO_ANALYTICS, DEMO_BILLING,
+  DEMO_REVIEWS, DEMO_ANALYTICS, DEMO_BILLING, DEMO_GOALS,
 } from '../demo.js';
 
 const BASE = import.meta.env.VITE_API_BASE_URL;
@@ -34,6 +34,31 @@ getMe: () => {
   logout: () => {
     if (isDemoMode()) return Promise.resolve();
     return request('/auth/logout', { method: 'POST' });
+  },
+
+  getGoals: () => {
+    if (isDemoMode()) return Promise.resolve(DEMO_GOALS);
+    return request('/api/goals');
+  },
+  createGoal: (data) => {
+    if (isDemoMode()) return Promise.resolve({ ...data, id: 'g' + Date.now() });
+    return request('/api/goals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+  updateGoal: (id, data) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/goals/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+  deleteGoal: (id) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request(`/api/goals/${id}`, { method: 'DELETE' });
   },
 
   getTeam: () => request('/api/team'),
