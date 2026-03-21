@@ -6,6 +6,7 @@ import { isDemoMode, enableDemoMode, disableDemoMode } from '../demo.js';
 const NAV = [
   { to: '/dashboard',              icon: '◈', label: 'Reviews',      roles: ['owner', 'manager'] },
   { to: '/dashboard/analytics',    icon: '◉', label: 'Health',       roles: ['owner', 'manager'] },
+  { to: '/dashboard/goals',        icon: '◎', label: 'Goals',        roles: ['owner', 'manager'] },
   { to: '/dashboard/locations',    icon: '⊡', label: 'Locations',    roles: ['owner', 'manager'] },
   { to: '/dashboard/team',         icon: '◎', label: 'Team',         roles: ['owner'] },
   { to: '/dashboard/billing',      icon: '◎', label: 'Billing',      roles: ['owner'] },
