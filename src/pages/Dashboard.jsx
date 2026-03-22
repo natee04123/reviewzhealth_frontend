@@ -10,6 +10,15 @@ const TABS = [
   { key: 'dismissed', label: 'Dismissed' },
 ];
 
+const signupPlan = localStorage.getItem('rzh_signup_plan');
+
+  function dismissPlanPrompt() {
+    localStorage.removeItem('rzh_signup_plan');
+    setShowPlanPrompt(false);
+  }
+
+  const [showPlanPrompt, setShowPlanPrompt] = useState(!!signupPlan);
+
 export default function Dashboard() {
   const [activeTab, setActiveTab]   = useState('pending');
   const [reviews, setReviews]       = useState([]);
@@ -50,7 +59,45 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding:'40px 48px', maxWidth:860, margin:'0 auto', width:'100%' }}>
-
+{showPlanPrompt && signupPlan && (
+        <div style={{
+          background:'var(--blue-bg)', border:'1px solid var(--blue-border)',
+          borderRadius:'var(--radius-lg)', padding:'16px 20px',
+          display:'flex', alignItems:'center', justifyContent:'space-between',
+          marginBottom:24, gap:16,
+        }}>
+          <div>
+            <div style={{ fontSize:14, fontWeight:500, color:'var(--ink)',
+              marginBottom:2 }}>
+              Complete your setup
+            </div>
+            <div style={{ fontSize:13, color:'var(--ink-2)' }}>
+              You selected the <strong style={{ textTransform:'capitalize' }}>{signupPlan}</strong> plan.
+              Add your billing info to activate your account after the free trial.
+            </div>
+          </div>
+          <div style={{ display:'flex', gap:8, flexShrink:0 }}>
+            <button onClick={dismissPlanPrompt} style={{
+              padding:'8px 14px', borderRadius:'var(--radius-md)',
+              background:'transparent', color:'var(--ink-3)',
+              border:'1px solid var(--border)', fontSize:12,
+              fontWeight:500, cursor:'pointer',
+            }}>
+              Later
+            </button>
+            <a href="/dashboard/billing" onClick={dismissPlanPrompt} style={{
+              padding:'8px 16px', borderRadius:'var(--radius-md)',
+              background:'var(--blue)', color:'#fff',
+              border:'none', fontSize:12, fontWeight:500,
+              cursor:'pointer', textDecoration:'none',
+              display:'inline-flex', alignItems:'center',
+            }}>
+              Set up billing →
+            </a>
+          </div>
+        </div>
+      )}
+      
       {/* Page header */}
       <div style={{ marginBottom:32 }}>
         <h1 style={{ fontFamily:'var(--font-display)', fontSize:32, fontWeight:400, marginBottom:6 }}>
