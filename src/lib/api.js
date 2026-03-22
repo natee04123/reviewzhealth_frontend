@@ -31,6 +31,12 @@ getMe: () => {
     if (isDemoMode()) return Promise.resolve({ user: DEMO_USER });
     return request('/auth/me');
   },
+  
+  acceptTerms: () => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request('/auth/accept-terms', { method: 'POST' });
+  },
+  
   logout: () => {
     if (isDemoMode()) return Promise.resolve();
     return request('/auth/logout', { method: 'POST' });
