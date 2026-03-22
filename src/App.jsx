@@ -22,9 +22,12 @@ function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const token = searchParams.get('token');
+    const plan  = searchParams.get('plan');
     if (token) {
       localStorage.setItem('rzh_token', token);
+      if (plan) localStorage.setItem('rzh_signup_plan', plan);
       searchParams.delete('token');
+      searchParams.delete('plan');
       setSearchParams(searchParams, { replace: true });
       onToken();
     }
