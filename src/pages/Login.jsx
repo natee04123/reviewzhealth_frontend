@@ -61,7 +61,7 @@ export default function Login() {
             textDecoration:'none' }}>Features</a>
           <a href="#pricing" style={{ fontSize:14, color:'var(--ink-2)',
             textDecoration:'none' }}>Pricing</a>
-          <a href={BASE + '/auth/google'} style={{
+          <a href={`${BASE}/auth/google?plan=${p.tier.toLowerCase()}`} style={{
             padding:'8px 20px', borderRadius:'var(--radius-md)',
             background:'var(--ink)', color:'var(--bg)',
             fontSize:14, fontWeight:500, textDecoration:'none',
