@@ -73,8 +73,7 @@ export default function Dashboard() {
               Complete your setup
             </div>
             <div style={{ fontSize:13, color:'var(--ink-2)' }}>
-              You selected the{' '}
-              <strong style={{ textTransform:'capitalize' }}>{signupPlan}</strong> plan.
+              You selected the <strong style={{ textTransform:'capitalize' }}>{signupPlan}</strong> plan.
               Add your billing info to activate your account after the free trial.
             </div>
           </div>
@@ -143,4 +142,89 @@ export default function Dashboard() {
           <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
             padding:'8px 16px', fontSize:14, fontWeight:500,
             color: activeTab === tab.key ? 'var(--ink)' : 'var(--ink-3)',
-            border
+            borderBottom:`2px solid ${activeTab === tab.key ? 'var(--ink)' : 'transparent'}`,
+            marginBottom:-1, borderRadius:0, transition:'all 0.15s',
+            background:'transparent', border:'none',
+            cursor:'pointer',
+          }}>
+            {tab.label}
+            {tab.key === 'pending' && pendingCount > 0 && (
+              <span style={{
+                marginLeft:6, background:'var(--amber)', color:'#fff',
+                borderRadius:99, fontSize:11, padding:'1px 6px', fontWeight:600,
+              }}>
+                {pendingCount}
+              </span>
+            )}
+          </button>
+        ))}
+        <div style={{ flex:1 }}/>
+        <button onClick={reload} style={{
+          fontSize:13, color:'var(--ink-3)', padding:'8px 4px',
+          background:'transparent', border:'none', cursor:'pointer',
+        }}>
+          ↻ Refresh
+        </button>
+      </div>
+
+      {loading && (
+        <div style={{ display:'flex', justifyContent:'center', padding:60 }}>
+          <Spinner size={28}/>
+        </div>
+      )}
+
+      {error && (
+        <div style={{
+          padding:20, borderRadius:'var(--radius-md)',
+          background:'var(--red-bg)', border:'1px solid var(--red-border)',
+          color:'var(--red)', fontSize:14,
+        }}>
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && reviews.length === 0 && (
+        <EmptyState
+          icon={activeTab === 'pending' ? '✓' : '◎'}
+          title={activeTab === 'pending' ? 'All caught up!' : 'No reviews here'}
+          body={activeTab === 'pending'
+            ? 'No reviews need attention right now. We\'ll notify you when new ones arrive.'
+            : 'No reviews in this category yet.'}
+        />
+      )}
+
+      {!loading && !error && reviews.length > 0 && (
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {reviews.map((review, i) => (
+            <ReviewCard
+              key={review.id}
+              review={review}
+              style={{ animationDelay:`${i * 0.04}s` }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value, accent, onClick, active }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        flex:1, padding:'16px 20px', borderRadius:'var(--radius-lg)',
+        background:'var(--bg-card)',
+        border:`${active ? '2px' : '1px'} solid ${active ? accent : 'var(--border)'}`,
+        boxShadow:'var(--shadow-sm)', cursor:'pointer',
+        transition:'all 0.15s',
+      }}
+    >
+      <div style={{ fontSize:28, fontFamily:'var(--font-display)',
+        color:accent, lineHeight:1 }}>
+        {value}
+      </div>
+      <div style={{ fontSize:12, color:'var(--ink-3)', marginTop:4 }}>{label}</div>
+    </div>
+  );
+}
