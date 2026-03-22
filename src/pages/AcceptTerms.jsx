@@ -78,7 +78,7 @@ export default function AcceptTerms({ onAccepted }) {
               <span style={{ color:'#fff', fontSize:11, lineHeight:1 }}>✓</span>
             )}
           </div>
-          <span style={{ fontSize:13, color:'var(--ink-2)', lineHeight:1.6 }}>
+<span style={{ fontSize:13, color:'var(--ink-2)', lineHeight:1.6 }}>
             I agree to the{' '}
             
               href="/terms"
