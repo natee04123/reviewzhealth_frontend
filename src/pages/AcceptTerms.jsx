@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { Spinner } from '../components/ui.jsx';
 
 export default function AcceptTerms({ onAccepted }) {
-  const [agreed, setAgreed]     = useState(false);
-  const [saving, setSaving]     = useState(false);
-  const [error, setError]       = useState(null);
+  const [agreed, setAgreed] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError]   = useState(null);
 
   async function handleAccept() {
     if (!agreed) { setError('Please check the box to continue'); return; }
@@ -23,8 +22,7 @@ export default function AcceptTerms({ onAccepted }) {
   return (
     <div style={{
       minHeight:'100vh', display:'flex', alignItems:'center',
-      justifyContent:'center', padding:24,
-      background:'var(--bg)',
+      justifyContent:'center', padding:24, background:'var(--bg)',
     }}>
       <div style={{
         background:'var(--bg-card)', borderRadius:'var(--radius-xl)',
@@ -51,7 +49,7 @@ export default function AcceptTerms({ onAccepted }) {
           border:'1px solid var(--border)',
           fontSize:13, color:'var(--ink-2)', lineHeight:1.7,
         }}>
-          <strong style={{ color:'var(--ink)' }}>What you're agreeing to:</strong>
+          <strong style={{ color:'var(--ink)' }}>What you are agreeing to:</strong>
           <ul style={{ margin:'8px 0 0', paddingLeft:20 }}>
             <li>Use reviewzhealth for legitimate business purposes</li>
             <li>Review and approve AI-drafted responses before posting</li>
@@ -69,7 +67,7 @@ export default function AcceptTerms({ onAccepted }) {
         >
           <div style={{
             width:18, height:18, borderRadius:4, flexShrink:0, marginTop:1,
-            border:`1.5px solid ${agreed ? 'var(--blue)' : 'var(--border)'}`,
+            border:'1.5px solid ' + (agreed ? 'var(--blue)' : 'var(--border)'),
             background: agreed ? 'var(--blue)' : 'transparent',
             display:'flex', alignItems:'center', justifyContent:'center',
             transition:'all 0.15s',
@@ -78,17 +76,18 @@ export default function AcceptTerms({ onAccepted }) {
               <span style={{ color:'#fff', fontSize:11, lineHeight:1 }}>✓</span>
             )}
           </div>
-<span style={{ fontSize:13, color:'var(--ink-2)', lineHeight:1.6 }}>
-            I agree to the{' '}
+          <span style={{ fontSize:13, color:'var(--ink-2)', lineHeight:1.6 }}>
+            I agree to the reviewzhealth{' '}
             
               href="/terms"
               target="_blank"
+              rel="noreferrer"
               onClick={e => e.stopPropagation()}
               style={{ color:'var(--blue)', textDecoration:'underline' }}
             >
               Terms of Service
             </a>
-            {' '}of reviewzhealth / Greenhalgh Holdings LLC.
+            {' '}by Greenhalgh Holdings LLC.
           </span>
         </div>
 
@@ -112,7 +111,9 @@ export default function AcceptTerms({ onAccepted }) {
             display:'flex', alignItems:'center', justifyContent:'center', gap:8,
           }}
         >
-          {saving ? <><Spinner size={16} color="var(--bg)"/> Saving...</> : 'Accept & continue →'}
+          {saving
+            ? React.createElement(React.Fragment, null, React.createElement(Spinner, { size:16, color:'var(--bg)' }), ' Saving...')
+            : 'Accept and continue'}
         </button>
       </div>
     </div>
