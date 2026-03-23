@@ -57,9 +57,13 @@ export default function Login() {
         padding: '20px 48px', borderBottom: '1px solid var(--border)',
         background: 'var(--bg-card)', position: 'sticky', top: 0, zIndex: 10,
       }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 400, color: 'var(--ink)' }}>
-          reviewz<span style={{ color: '#1D9E75' }}>health</span>
-        </div>
+        <svg height="36" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="44" cy="50" r="36" fill="#1A1A18"/>
+          <circle cx="44" cy="50" r="28" fill="none" stroke="#1D9E75" strokeWidth="1.5" opacity="0.4"/>
+          <polyline points="20,50 30,50 36,34 42,66 48,42 54,58 60,50 68,50"
+            fill="none" stroke="#1D9E75" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <text x="92" y="62" fontFamily="Georgia, serif" fontSize="42" fontWeight="400" fill="#1A1A18" letterSpacing="-0.5">reviewz<tspan fill="#1D9E75">health</tspan></text>
+        </svg>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <a href="#features" style={{ fontSize: 14, color: 'var(--ink-2)', textDecoration: 'none' }}>Features</a>
           <a href="#pricing" style={{ fontSize: 14, color: 'var(--ink-2)', textDecoration: 'none' }}>Pricing</a>
