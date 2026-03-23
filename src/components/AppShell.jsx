@@ -58,7 +58,7 @@ export default function AppShell({ user }) {
 
         {/* Wordmark */}
         <div style={{ padding:'28px 20px 20px', borderBottom:'1px solid rgba(247,245,240,0.06)' }}>
-         <svg height="28" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
+         <svg height="38" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="44" cy="50" r="36" fill="#F7F5EF"/>
             <circle cx="44" cy="50" r="28" fill="none" stroke="#1D9E75" strokeWidth="1.5" opacity="0.5"/>
             <polyline points="20,50 30,50 36,34 42,66 48,42 54,58 60,50 68,50"
