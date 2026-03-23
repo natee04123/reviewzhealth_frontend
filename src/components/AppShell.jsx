@@ -58,12 +58,13 @@ export default function AppShell({ user }) {
 
         {/* Wordmark */}
         <div style={{ padding:'28px 20px 20px', borderBottom:'1px solid rgba(247,245,240,0.06)' }}>
-          <div style={{
-            fontFamily:'var(--font-display)', fontSize:21,
-            color:'#F7F5EF', lineHeight:1.15, letterSpacing:'-0.01em',
-          }}>
-            reviewz<span style={{ color:'#1D9E75' }}>health</span>
-          </div>
+         <svg height="28" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="44" cy="50" r="36" fill="#F7F5EF"/>
+            <circle cx="44" cy="50" r="28" fill="none" stroke="#1D9E75" strokeWidth="1.5" opacity="0.5"/>
+            <polyline points="20,50 30,50 36,34 42,66 48,42 54,58 60,50 68,50"
+              fill="none" stroke="#1D9E75" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <text x="92" y="62" fontFamily="Georgia, serif" fontSize="42" fontWeight="400" fill="#F7F5EF" letterSpacing="-0.5">reviewz<tspan fill="#1D9E75">health</tspan></text>
+          </svg>
           {demo && (
             <div style={{
               marginTop:6, display:'inline-flex', alignItems:'center', gap:5,
