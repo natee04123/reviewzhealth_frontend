@@ -15,51 +15,85 @@ const PLATFORM_CONFIG = {
     name: 'Facebook',
     color: '#1877F2',
     canAutoPost: false,
-    manageUrl: 'https://business.facebook.com/latest/inbox/reviews',
-    instruction: 'Opens Facebook Business inbox. Find the review and paste your reply.',
+    getManageUrl: (connectionUrl) => {
+      if (connectionUrl) {
+        const slug = connectionUrl.replace(/\/$/, '').split('/').pop();
+        return `https://www.facebook.com/${slug}/reviews`;
+      }
+      return 'https://business.facebook.com/latest/inbox/reviews';
+    },
+    instruction: 'Opens your Facebook reviews page. The review should be at the top — paste your reply and post.',
   },
   yelp: {
     name: 'Yelp',
     color: '#D32323',
     canAutoPost: false,
-    manageUrl: 'https://biz.yelp.com/reviews',
-    instruction: 'Opens Yelp for Business. Find the review and paste your reply.',
+    getManageUrl: (connectionUrl) => {
+      if (connectionUrl) {
+        const slug = connectionUrl.replace(/\/$/, '').split('/').pop();
+        return `https://biz.yelp.com/respond_to_reviews/${slug}`;
+      }
+      return 'https://biz.yelp.com/reviews';
+    },
+    instruction: 'Opens your Yelp reviews page. Find the review and paste your reply.',
   },
   tripadvisor: {
     name: 'Tripadvisor',
     color: '#00AA6C',
     canAutoPost: false,
-    manageUrl: 'https://www.tripadvisor.com/Owners',
-    instruction: 'Opens Tripadvisor Management Center. Go to Reviews and paste your reply.',
+    getManageUrl: (connectionUrl) => {
+      if (connectionUrl) {
+        const reviewId = connectionUrl.replace(/\/$/, '').split('-').pop();
+        return `${connectionUrl}#REVIEWS`;
+      }
+      return 'https://www.tripadvisor.com/Owners';
+    },
+    instruction: 'Opens your Tripadvisor listing. The most recent review will be at the top — paste your reply.',
   },
   opentable: {
     name: 'OpenTable',
     color: '#DA3743',
     canAutoPost: false,
-    manageUrl: 'https://restaurant.opentable.com/home',
-    instruction: 'Opens OpenTable for Restaurants. Find the review and paste your reply.',
+    getManageUrl: () => 'https://restaurant.opentable.com/reviews',
+    instruction: 'Opens OpenTable for Restaurants. The review should be at the top — paste your reply and submit.',
   },
   ubereats: {
     name: 'Uber Eats',
     color: '#000000',
     canAutoPost: false,
-    manageUrl: 'https://merchants.ubereats.com',
-    instruction: 'Opens Uber Eats Manager. Find the review and paste your reply.',
+    getManageUrl: () => 'https://merchants.ubereats.com/manager/reviews',
+    instruction: 'Opens Uber Eats Manager reviews. The review should be at the top — paste your reply.',
   },
   doordash: {
     name: 'DoorDash',
     color: '#FF3008',
     canAutoPost: false,
-    manageUrl: 'https://merchant-portal.doordash.com',
-    instruction: 'Opens DoorDash Merchant Portal. Find the review and paste your reply.',
+    getManageUrl: () => 'https://merchant-portal.doordash.com/portal/reviews',
+    instruction: 'Opens DoorDash Merchant Portal reviews. The review should be at the top — paste your reply.',
+  },
+  grubhub: {
+    name: 'Grubhub',
+    color: '#FF8000',
+    canAutoPost: false,
+    getManageUrl: () => 'https://restaurant.grubhub.com/reviews',
+    instruction: 'Opens Grubhub restaurant reviews. The review should be at the top — paste your reply.',
   },
 };
 
 function getPlatform(review) {
   const source = review?.source?.toLowerCase() ?? 'google';
-  return PLATFORM_CONFIG[source] ?? PLATFORM_CONFIG.google;
+  const config = PLATFORM_CONFIG[source] ?? PLATFORM_CONFIG.google;
+  
+  const connections = (() => {
+    try { return JSON.parse(localStorage.getItem('rzh_connections') || '{}'); }
+    catch { return {}; }
+  })();
+  
+  const connectionUrl = connections[source] ?? null;
+  const manageUrl = config.getManageUrl ? config.getManageUrl(connectionUrl) : config.manageUrl;
+  
+  return { ...config, manageUrl };
 }
-
 export default function ReviewDetail() {
   const { id }     = useParams();
   const navigate   = useNavigate();
@@ -112,13 +146,13 @@ export default function ReviewDetail() {
     }
   }
 
-  async function handleCopyAndOpen(platform) {
+ async function handleCopyAndOpen(platform) {
     const text = editedText || review?.draft_text || '';
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
-      showToast(`Copied! Opening ${platform.name}...`);
+      showToast(`Draft copied — the review should be at the top of the list`);
       setTimeout(() => window.open(platform.manageUrl, '_blank'), 600);
     } catch {
       showToast('Copy failed — please select and copy the text manually', 'error');
