@@ -57,7 +57,7 @@ export default function Login() {
         padding: '20px 48px', borderBottom: '1px solid var(--border)',
         background: 'var(--bg-card)', position: 'sticky', top: 0, zIndex: 10,
       }}>
-        <svg height="36" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
+        <svg height="48" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="44" cy="50" r="36" fill="#1A1A18"/>
           <circle cx="44" cy="50" r="28" fill="none" stroke="#1D9E75" strokeWidth="1.5" opacity="0.4"/>
           <polyline points="20,50 30,50 36,34 42,66 48,42 54,58 60,50 68,50"
@@ -300,7 +300,7 @@ export default function Login() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         fontSize: 12, color: 'var(--ink-3)',
       }}>
-        <svg height="24" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
+        <svg height="32" viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="44" cy="50" r="36" fill="#1A1A18"/>
           <circle cx="44" cy="50" r="28" fill="none" stroke="#1D9E75" strokeWidth="1.5" opacity="0.4"/>
           <polyline points="20,50 30,50 36,34 42,66 48,42 54,58 60,50 68,50"
