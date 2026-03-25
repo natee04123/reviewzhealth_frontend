@@ -249,9 +249,12 @@ export default function Integrations() {
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
     api.getMe()
-      .then(user => setGoogleConnected(!!user?.id))
+      .then(data => {
+        const user = data?.user ?? data;
+        setGoogleConnected(!!user?.id);
+      })
       .catch(() => {});
   }, []);
 
@@ -428,10 +431,10 @@ export default function Integrations() {
                   ))}
                 </div>
 
-                <button
+<button
                   onClick={() => {
                     if (platform.key === 'google') {
-                      window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+                      window.location.href = '/dashboard/locations';
                     } else {
                       setModal(platform);
                     }
@@ -444,7 +447,7 @@ export default function Integrations() {
                   }}
                 >
                   <Logo platform={platform} size={14} />
-                  Connect {platform.name}
+                  {platform.key === 'google' ? 'Sync Google locations' : `Connect ${platform.name}`}
                 </button>
               </div>
             ))}
