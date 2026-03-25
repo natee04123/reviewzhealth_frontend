@@ -80,6 +80,7 @@ export default function App() {
       <TokenCapture onToken={checkAuth} />
       <Routes>
         <Route path="/terms"          element={<Terms />} />
+         <Route path="/privacy"        element={<Privacy />} />
         <Route path="/invite/:token"  element={<InviteAccept />} />
         <Route path="/" element={
           user ? <Navigate to="/dashboard" replace /> : <Login />
@@ -100,7 +101,6 @@ export default function App() {
           <Route path="integrations" element={<Integrations />} />
           <Route path="team"         element={<Team />} />
           <Route path="goals"        element={<Goals />} />
-          <Route path="/privacy" element={<Privacy />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
