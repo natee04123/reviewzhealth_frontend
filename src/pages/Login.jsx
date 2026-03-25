@@ -309,7 +309,6 @@ export default function Login() {
         </svg>
         <div style={{ display: 'flex', gap: 24 }}>
           <a href="/terms" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>Terms of Service</a>
-          <a href="/privacy" style={{ color:'var(--ink-3)', textDecoration:'none' }}>Privacy Policy</a>
           <a href="mailto:nathan@reviewzhealth.com" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>Contact</a>
         </div>
         <div>2026 Greenhalgh Holdings LLC</div>
