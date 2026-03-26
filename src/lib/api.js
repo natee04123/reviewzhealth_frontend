@@ -41,7 +41,16 @@ getMe: () => {
     if (isDemoMode()) return Promise.resolve();
     return request('/auth/logout', { method: 'POST' });
   },
-
+  
+updateMe: (data) => {
+    if (isDemoMode()) return Promise.resolve({ ok: true });
+    return request('/auth/me', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  },
+  
   getGoals: () => {
     if (isDemoMode()) return Promise.resolve(DEMO_GOALS);
     return request('/api/goals');
