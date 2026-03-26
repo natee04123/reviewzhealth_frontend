@@ -94,49 +94,6 @@ async function sendMessage(text) {
     }
   }
 
-      if (!res.ok) throw new Error('Failed to get response');
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantText = '';
-
-      setMessages(prev => [...prev, { role:'assistant', content:'' }]);
-      setLoading(false);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const data = JSON.parse(line.slice(6));
-            if (data.text) {
-              assistantText += data.text;
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = {
-                  role: 'assistant',
-                  content: assistantText,
-                };
-                return updated;
-              });
-            }
-          } catch {}
-        }
-      }
-    } catch (e) {
-      setLoading(false);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Sorry, something went wrong. Please try again or email nathan@reviewzhealth.com.',
-      }]);
-    }
-  }
-
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
