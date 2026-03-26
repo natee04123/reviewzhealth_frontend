@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { isDemoMode, enableDemoMode, disableDemoMode } from '../demo.js';
+import AskZ from './AskZ.jsx';
 
 const NAV = [
   { to: '/dashboard',              icon: '◈', label: 'Reviews',      roles: ['owner', 'manager'] },
@@ -199,6 +200,7 @@ export default function AppShell({ user }) {
           </div>
         )}
         <Outlet />
+      <AskZ />
       </main>
     </div>
   );
