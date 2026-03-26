@@ -58,25 +58,41 @@ export default function AskZ() {
     bottomRef.current?.scrollIntoView({ behavior:'smooth' });
   }, [messages, loading]);
 
-  async function sendMessage(text) {
+async function sendMessage(text) {
     const userMsg = text || input.trim();
     if (!userMsg || loading) return;
 
     setInput('');
     setShowSuggestions(false);
-    setMessages(prev => [...prev, { role:'user', content: userMsg }]);
+    const newMessages = [...messages, { role:'user', content: userMsg }];
+    setMessages(newMessages);
     setLoading(true);
-
-    const history = [...messages, { role:'user', content: userMsg }];
 
     try {
       const res = await fetch(`${BASE}/api/support/chat`, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: history.map(m => ({ role: m.role, content: m.content })),
+          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
         }),
       });
+
+      if (!res.ok) throw new Error('Failed to get response');
+
+      const data = await res.json();
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.text,
+      }]);
+    } catch (e) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Sorry, something went wrong. Please try again or email nathan@reviewzhealth.com.',
+      }]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
       if (!res.ok) throw new Error('Failed to get response');
 
