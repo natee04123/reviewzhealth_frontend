@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+const BASE = import.meta.env.VITE_API_BASE_URL || 'https://reviewzhealthbackend-production.up.railway.app';
 
 function PulseLogo({ size = 20 }) {
   return (
