@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AskZ from '../components/AskZ.jsx';
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -315,6 +316,7 @@ export default function Login() {
         <div>2026 Greenhalgh Holdings LLC</div>
       </div>
 
+    <AskZ />
     </div>
   );
 }
