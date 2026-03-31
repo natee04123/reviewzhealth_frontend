@@ -18,6 +18,7 @@ import Terms         from './pages/Terms.jsx';
 import { Spinner }   from './components/ui.jsx';
 import { isDemoMode } from './demo.js';
 import Privacy from './pages/Privacy.jsx';
+import Insights from './pages/Insights.jsx';
 
 function TokenCapture({ onToken }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -101,6 +102,7 @@ export default function App() {
           <Route path="integrations" element={<Integrations />} />
           <Route path="team"         element={<Team />} />
           <Route path="goals"        element={<Goals />} />
+          <Route path="insights" element={<Insights />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
