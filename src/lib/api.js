@@ -75,6 +75,14 @@ updateMe: (data) => {
     if (isDemoMode()) return Promise.resolve({ ok: true });
     return request(`/api/goals/${id}`, { method: 'DELETE' });
   },
+  getInsights: () => {
+    if (isDemoMode()) return Promise.resolve({ insights: DEMO_INSIGHTS, generated_at: new Date().toISOString() });
+    return request('/api/insights');
+  },
+  generateInsights: () => {
+    if (isDemoMode()) return Promise.resolve({ insights: DEMO_INSIGHTS, generated_at: new Date().toISOString() });
+    return request('/api/insights/generate', { method: 'POST' });
+  },
 
   getTeam: () => request('/api/team'),
   
