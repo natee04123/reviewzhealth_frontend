@@ -2,6 +2,7 @@ import {
   isDemoMode, DEMO_USER, DEMO_LOCATIONS,
   DEMO_REVIEWS, DEMO_ANALYTICS, DEMO_BILLING, DEMO_GOALS,
 } from '../demo.js';
+import { DEMO_INSIGHTS } from '../demo.js';
 
 const BASE = import.meta.env.VITE_API_BASE_URL;
 
