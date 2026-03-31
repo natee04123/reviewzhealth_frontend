@@ -519,3 +519,84 @@ export const DEMO_GOALS = [
     progress_pct: 30,
   },
 ];
+export const DEMO_INSIGHTS = {
+  review_count: 89,
+  summary: "Mesa Group locations are performing strongly with customers consistently praising food quality and staff friendliness. Wait times and inconsistent portion sizes are emerging as recurring friction points that deserve attention across multiple locations.",
+  positives: [
+    {
+      theme: "Food quality",
+      description: "Customers frequently highlight the freshness and flavor of the food, particularly the tacos and signature bowls.",
+      count: 34,
+      example: "Best Southwestern food I've had in Utah — the carnitas bowl is incredible"
+    },
+    {
+      theme: "Staff friendliness",
+      description: "Front of house staff receiving strong praise across nearly all locations for warmth and attentiveness.",
+      count: 28,
+      example: "The staff made us feel so welcome, will definitely be back"
+    },
+    {
+      theme: "Atmosphere",
+      description: "Customers love the vibe and decor, particularly at the Downtown SLC and Sugarhouse locations.",
+      count: 19,
+      example: "Great atmosphere, perfect for a date night or family dinner"
+    },
+    {
+      theme: "Value for money",
+      description: "Many reviewers feel the portion sizes and quality justify the price point.",
+      count: 14,
+      example: "Generous portions and great quality — worth every penny"
+    }
+  ],
+  negatives: [
+    {
+      theme: "Wait times",
+      description: "Multiple reviews across 4 locations mention longer than expected wait times, particularly on weekends during dinner service.",
+      count: 12,
+      example: "Food was great but we waited 45 minutes on a Saturday night",
+      urgency: "high"
+    },
+    {
+      theme: "Inconsistent portions",
+      description: "Some customers note that portion sizes vary between visits or between locations.",
+      count: 7,
+      example: "Same bowl I ordered last week was noticeably smaller this time",
+      urgency: "medium"
+    },
+    {
+      theme: "Parking",
+      description: "Customers at the Downtown and Sugarhouse locations mention difficulty finding parking.",
+      count: 5,
+      example: "Love the food but parking is a nightmare downtown",
+      urgency: "low"
+    }
+  ],
+  opportunities: [
+    {
+      title: "Address wait times proactively",
+      description: "With 12 reviews mentioning wait times in the last 90 days, consider adding wait time expectations to your AI response templates so customers feel heard and know what to expect on busy nights."
+    },
+    {
+      title: "Highlight parking options in responses",
+      description: "For Downtown and Sugarhouse locations, mention free parking behind the building in review responses to preempt a common complaint."
+    },
+    {
+      title: "Leverage food quality praise",
+      description: "Food quality is your strongest asset — consider asking happy customers to mention specific dishes in their reviews to improve your Google profile richness."
+    }
+  ],
+  location_spotlight: [
+    {
+      location: "Mesa Group — Downtown SLC",
+      note: "Highest review volume and strongest ratings — a model for other locations. Consistently praised for atmosphere and staff."
+    },
+    {
+      location: "Mesa Group — Provo",
+      note: "Most mentions of wait times — worth reviewing staffing on Friday and Saturday evenings."
+    },
+    {
+      location: "Mesa Group — Sugarhouse",
+      note: "Strong food ratings but parking complaints are unique to this location — worth addressing in every response."
+    }
+  ]
+};
