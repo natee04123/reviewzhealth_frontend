@@ -13,7 +13,7 @@ const NAV = [
   { to: '/dashboard/billing',      icon: '◎', label: 'Billing',      roles: ['owner'] },
   { to: '/dashboard/integrations', icon: '⬡', label: 'Integrations', roles: ['owner'] },
   { to: '/dashboard/settings',     icon: '◌', label: 'Settings',     roles: ['owner'] },
-  { to: '/dashboard/insights', label: 'AI Insights', icon: '✦' },
+  { to: '/dashboard/insights', icon: '✦', label: 'AI Insights', roles: ['owner', 'manager'] },
 ];
 
 export default function AppShell({ user }) {
