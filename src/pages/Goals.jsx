@@ -418,23 +418,13 @@ function GoalModal({ goal, locations, ratings, onSave, onClose, userRole }) {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div>
-            <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink-2)', display: 'block', marginBottom: 6 }}>
-              Current rating
-            </label>
-            <input type="number" min="1" max="5" step="0.1"
-              value={currentRating} onChange={e => setCurrentRating(e.target.value)}
-              placeholder="e.g. 4.4" style={inputStyle}/>
-          </div>
-          <div>
-            <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink-2)', display: 'block', marginBottom: 6 }}>
-              Total reviews
-            </label>
-            <input type="number" min="0"
-              value={currentReviews} onChange={e => setCurrentReviews(e.target.value)}
-              placeholder="e.g. 89" style={inputStyle}/>
-          </div>
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--ink-2)', display: 'block', marginBottom: 6 }}>
+            Current rating
+          </label>
+          <input type="number" min="1" max="5" step="0.1"
+            value={currentRating} onChange={e => setCurrentRating(e.target.value)}
+            placeholder="e.g. 4.4" style={inputStyle}/>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
