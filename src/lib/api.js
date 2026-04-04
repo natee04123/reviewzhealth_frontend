@@ -206,6 +206,32 @@ regenerateReview: (id) => {
     return request('/api/analytics');
   },
 
+  getRatings: () => {
+    if (isDemoMode()) return Promise.resolve({
+      google: {
+        avg_rating: 4.6, total_reviews: 89, next_target: 4.7,
+        reviews_needed: 73,
+        star_breakdown: { 5: 62, 4: 18, 3: 4, 2: 3, 1: 2 },
+      },
+      ubereats: {
+        avg_rating: 4.8, total_reviews: 31, next_target: 4.9,
+        reviews_needed: 7,
+        star_breakdown: { 5: 28, 4: 2, 3: 1, 2: 0, 1: 0 },
+      },
+      doordash: {
+        avg_rating: 4.5, total_reviews: 22, next_target: 4.6,
+        reviews_needed: 5,
+        star_breakdown: { 5: 14, 4: 6, 3: 1, 2: 1, 1: 0 },
+      },
+      yelp: {
+        avg_rating: 4.3, total_reviews: 48, next_target: 4.4,
+        reviews_needed: 11,
+        star_breakdown: { 5: 28, 4: 12, 3: 5, 2: 2, 1: 1 },
+      },
+    });
+    return request('/api/analytics/ratings');
+  },
+  
   // Billing
   getPlans:         ()                        => request('/api/billing/plans'),
   getBillingStatus: () => {
